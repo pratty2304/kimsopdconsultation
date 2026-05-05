@@ -1,0 +1,547 @@
+/* ==========================================================
+   KIMS MACS Onco Sciences — OPD Summary Generator
+   Pastel, minimalistic, professional
+   ========================================================== */
+
+:root {
+  --bg: #faf7f4;
+  --surface: #ffffff;
+  --surface-soft: #f4f1ee;
+  --primary: #2c93c9;        /* KIMS blue */
+  --primary-soft: #e3f1f9;
+  --accent: #b07cc6;         /* Macs purple */
+  --accent-soft: #f1e7f6;
+  --rose: #e89aab;
+  --rose-soft: #fbeef1;
+  --text: #2f3437;
+  --text-soft: #6b7378;
+  --border: #e7e2dd;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(40, 40, 60, 0.04), 0 6px 20px rgba(40, 40, 60, 0.05);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--primary-soft) 0%, var(--accent-soft) 60%, var(--rose-soft) 100%);
+  border-radius: var(--radius);
+  margin-bottom: 28px;
+  box-shadow: var(--shadow);
+}
+
+.header-logo {
+  height: 70px;
+  width: auto;
+  flex-shrink: 0;
+  background: white;
+  padding: 8px 14px;
+  border-radius: 10px;
+}
+
+.header-text h1 {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--text);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--text-soft);
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+
+.card h2 {
+  margin: 0 0 14px 0;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--primary);
+}
+
+/* ---------- Form layout ---------- */
+.grid {
+  display: grid;
+  gap: 14px;
+}
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 720px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-soft);
+  letter-spacing: 0.2px;
+  gap: 6px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface-soft);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 12px 14px;
+  width: 100%;
+  min-height: 44px;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  resize: vertical;
+}
+
+/* Hide spinner arrows on number inputs for a cleaner look */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+textarea { min-height: 70px; }
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+input[readonly] {
+  background: var(--primary-soft);
+  color: var(--text);
+  font-weight: 600;
+  cursor: default;
+}
+
+/* When inside a grid cell, textareas should fill */
+label > textarea { margin-top: 0; }
+
+/* ---------- Chemo planner ---------- */
+.chemo-card {
+  border-left: 3px solid var(--accent);
+}
+
+.optional-tag {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  background: var(--surface-soft);
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.toggle-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+.toggle-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.chemo-area {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.carb-section {
+  margin-top: 14px;
+  padding: 14px;
+  background: var(--accent-soft);
+  border-radius: 10px;
+  border: 1px solid #e3d4ec;
+}
+
+.carb-heading {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.carb-calc {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text);
+  background: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e3d4ec;
+  min-height: 18px;
+}
+
+.chemo-preview {
+  margin-top: 16px;
+}
+
+.chemo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.chemo-table thead th {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #d6e8f3;
+}
+
+.chemo-table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0ece8;
+  vertical-align: top;
+}
+
+.chemo-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.chemo-table .dose-cell {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.chemo-table .sched-cell {
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.chemo-notes-label {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ---------- Actions ---------- */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 11px 22px;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #2381b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(44, 147, 201, 0.25);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-soft);
+  border-color: var(--border);
+}
+.btn-ghost:hover {
+  background: var(--surface-soft);
+  color: var(--text);
+}
+
+/* ==========================================================
+   PRINT STYLES — clean letter for the patient
+   ========================================================== */
+
+.print-only { display: none; }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 5mm 8mm 14mm 8mm;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+
+  #printArea {
+    color: #000;
+    font-family: "Georgia", "Times New Roman", serif;
+  }
+
+  /* Two-column print grid bordered top & bottom */
+  .print-grid {
+    display: grid;
+    grid-template-columns: 52mm 1fr;
+    gap: 0;
+    border-top: 1.2pt solid #000;
+    border-bottom: 1.2pt solid #000;
+  }
+
+  /* Left sidebar — team list */
+  .print-sidebar {
+    border-right: 1pt solid #000;
+    padding: 10pt 10pt 10pt 0;
+  }
+
+  .team-heading {
+    font-weight: 700;
+    font-size: 11pt;
+    text-transform: uppercase;
+    letter-spacing: 0.6pt;
+    color: #2c93c9;
+    border-bottom: 1pt solid #2c93c9;
+    padding-bottom: 4pt;
+    margin-bottom: 10pt;
+  }
+
+  .team-doctor {
+    margin-bottom: 12pt;
+    page-break-inside: avoid;
+  }
+
+  .td-name {
+    font-weight: 700;
+    font-size: 10pt;
+    color: #000;
+  }
+
+  .td-qual {
+    font-size: 9pt;
+    font-style: italic;
+    color: #333;
+  }
+
+  .td-role {
+    font-size: 8.5pt;
+    color: #444;
+    line-height: 1.3;
+  }
+
+  .td-kmc {
+    font-size: 8.5pt;
+    color: #555;
+    margin-top: 2pt;
+  }
+
+  /* Right main content */
+  .print-main {
+    padding: 10pt 0 10pt 12pt;
+  }
+
+  .print-logo-wrap {
+    width: 70mm;
+    height: 30mm;
+    margin: 0 0 4mm 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .print-logo {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    margin: 0;
+    object-fit: contain;
+  }
+
+  .print-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4pt 18pt;
+    margin-bottom: 12pt;
+    padding: 6pt 10pt;
+    background: #f4f1ee;
+    border-radius: 4pt;
+    font-size: 10pt;
+  }
+
+  .print-section {
+    margin-bottom: 10pt;
+    page-break-inside: avoid;
+  }
+
+  .print-section h3 {
+    margin: 0 0 3pt 0;
+    font-size: 10pt;
+    text-transform: uppercase;
+    letter-spacing: 0.6pt;
+    color: #2c93c9;
+    border-bottom: 0.6pt solid #b8d8e8;
+    padding-bottom: 1pt;
+  }
+
+  .print-section p {
+    margin: 3pt 0;
+    white-space: pre-wrap;
+    line-height: 1.4;
+    font-size: 10.5pt;
+  }
+
+  .print-section[data-section="prescription"] h3 {
+    font-size: 14pt;
+    font-style: italic;
+    border-bottom: none;
+    color: #2c93c9;
+    margin-bottom: 4pt;
+  }
+
+  .print-section[data-section="prescription"] p {
+    padding-left: 10pt;
+    border-left: 1.5pt solid #b8d8e8;
+  }
+
+  /* Chemotherapy print section */
+  .chemo-summary-line {
+    font-size: 9.5pt;
+    margin: 4pt 0 6pt 0;
+    color: #333;
+  }
+
+  .print-chemo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    margin-top: 4pt;
+  }
+
+  .print-chemo-table th,
+  .print-chemo-table td {
+    border: 0.5pt solid #999;
+    padding: 4pt 6pt;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .print-chemo-table th {
+    background: #e3f1f9;
+    color: #2c93c9;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.4pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-chemo-notes {
+    margin-top: 6pt;
+    font-size: 9.5pt;
+    color: #333;
+  }
+
+  .print-chemo-disclaimer {
+    margin-top: 5pt;
+    font-size: 8.5pt;
+    font-style: italic;
+    color: #777;
+    text-align: right;
+  }
+
+  .print-signature {
+    margin-top: 28pt;
+    text-align: right;
+    page-break-inside: avoid;
+  }
+
+  .sig-line {
+    display: inline-block;
+    width: 180pt;
+    border-top: 0.8pt solid #333;
+    margin-bottom: 4pt;
+  }
+
+  .sig-sub {
+    font-size: 9pt;
+    color: #444;
+  }
+}

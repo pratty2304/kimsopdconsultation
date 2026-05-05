@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OPD Consultation Summary — KIMS MACS Onco Sciences</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app no-print">
+    <header class="app-header">
+      <img src="logo.png" alt="KIMS MACS Onco Sciences" class="header-logo" />
+      <div class="header-text">
+        <h1>OPD Consultation Summary</h1>
+        <p class="subtitle">Fill in the sections below and generate a professional summary for the patient.</p>
+      </div>
+    </header>
+
+    <form id="opdForm" autocomplete="off">
+
+      <section class="card">
+        <h2>Patient Details</h2>
+        <div class="grid grid-3">
+          <label>Name
+            <input type="text" id="name" placeholder="Full name" />
+          </label>
+          <label>Age
+            <input type="text" id="age" placeholder="e.g. 54 years" />
+          </label>
+          <label>Sex
+            <select id="sex">
+              <option value="">Select</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>Date of Consultation
+            <input type="date" id="date" />
+          </label>
+          <label>MRN (optional)
+            <input type="text" id="mrn" placeholder="MRN / ID" />
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Chief Complaints</h2>
+        <textarea id="complaints" rows="3" placeholder="Presenting complaints with duration"></textarea>
+      </section>
+
+      <section class="card">
+        <h2>History of Present Illness</h2>
+        <textarea id="hpi" rows="6" placeholder="Detailed history of the current illness, including investigations reviewed (blood reports, imaging, biopsy/IHC, molecular reports, etc.)"></textarea>
+      </section>
+
+      <section class="card">
+        <h2>Past History / Comorbidities</h2>
+        <textarea id="pastHistory" rows="3" placeholder="Diabetes, hypertension, prior surgeries, prior cancer treatment, etc."></textarea>
+      </section>
+
+      <section class="card">
+        <h2>Personal &amp; Family History</h2>
+        <div class="grid grid-2">
+          <label>Personal History
+            <textarea id="personalHistory" rows="3" placeholder="Smoking, alcohol, tobacco, diet, allergies"></textarea>
+          </label>
+          <label>Family History
+            <textarea id="familyHistory" rows="3" placeholder="Family history of cancer or other significant illness"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Examination</h2>
+        <div class="grid grid-4">
+          <label>Height (cm)
+            <input type="number" step="0.1" min="0" id="height" placeholder="e.g. 165" />
+          </label>
+          <label>Weight (kg)
+            <input type="number" step="0.1" min="0" id="weight" placeholder="e.g. 62" />
+          </label>
+          <label>BSA (m²) — Mosteller
+            <input type="text" id="bsa" placeholder="auto-calculated" readonly />
+          </label>
+          <label>ECOG
+            <select id="ecog">
+              <option value="">Select</option>
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+            </select>
+          </label>
+        </div>
+        <div class="grid grid-2">
+          <label>General Examination
+            <textarea id="generalExam" rows="3" placeholder="Pallor, icterus, lymphadenopathy, etc."></textarea>
+          </label>
+          <label>Systemic / Local Examination
+            <textarea id="systemicExam" rows="3" placeholder="CVS / RS / P/A / CNS, local tumour findings"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Diagnosis</h2>
+        <textarea id="diagnosis" rows="3" placeholder="Primary site, histology, stage, biomarkers"></textarea>
+      </section>
+
+      <section class="card">
+        <h2>Treatment Plan / Advice</h2>
+        <textarea id="plan" rows="5" placeholder="Plan of management, supportive care, lifestyle advice"></textarea>
+      </section>
+
+      <section class="card chemo-card">
+        <h2>Plan Chemotherapy <span class="optional-tag">optional</span></h2>
+
+        <label class="toggle-row">
+          <input type="checkbox" id="planChemoToggle" />
+          <span>Plan chemotherapy for this visit</span>
+        </label>
+
+        <div id="chemoPlannerArea" class="chemo-area" hidden>
+
+          <div class="grid grid-2">
+            <label>Cancer Type
+              <select id="chemoCancer">
+                <option value="">— Select —</option>
+              </select>
+            </label>
+            <label>Regimen
+              <select id="chemoRegimen" disabled>
+                <option value="">— Select cancer first —</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="carbSection" class="carb-section" hidden>
+            <div class="carb-heading">Carboplatin AUC dosing</div>
+            <label>Serum Creatinine (mg/dL)
+              <input type="number" step="0.01" id="chemoCreat" placeholder="e.g. 0.9" />
+            </label>
+            <div id="carbCalc" class="carb-calc"></div>
+          </div>
+
+          <div id="chemoTablePreview" class="chemo-preview"></div>
+
+          <label class="chemo-notes-label">Additional notes for this cycle (optional)
+            <textarea id="chemoCycleNotes" rows="2" placeholder="e.g. Dose-reduced 20% for prior toxicity; pre-medicate with..."></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Other Notes</h2>
+        <textarea id="otherNotes" rows="4" placeholder="Any additional notes, counselling points, or remarks for the patient"></textarea>
+      </section>
+
+      <section class="card">
+        <h2>Rx — Prescription</h2>
+        <textarea id="prescription" rows="5" placeholder="Tab. Paracetamol 500 mg — 1 tab thrice daily after food x 5 days&#10;Tab. Pantoprazole 40 mg — 1 tab once daily before breakfast x 7 days"></textarea>
+      </section>
+
+      <section class="card">
+        <h2>Follow-up</h2>
+        <div class="grid grid-2">
+          <label>Follow-up Date
+            <input type="date" id="followupDate" />
+          </label>
+          <label>Follow-up Instructions
+            <input type="text" id="followupNotes" placeholder="e.g. Review with PET-CT, fasting required" />
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Consulting Doctor</h2>
+        <label>Select Consultant
+          <select id="consultant">
+            <option value="">— Select —</option>
+            <option value="suresh">Dr Suresh Babu MC — MBBS, MD, DM</option>
+            <option value="prathyusha">Dr Prathyusha Eaga — MBBS, MD, DM</option>
+            <option value="chetan">Dr Chetan V — MBBS, MD, DNB, DM</option>
+            <option value="vivek">Dr Vivek B Maleyur — MBBS, MD, DM</option>
+          </select>
+        </label>
+      </section>
+
+      <div class="actions">
+        <button type="button" id="printBtn" class="btn-primary">Print / Save as PDF</button>
+        <button type="button" id="clearBtn" class="btn-ghost">Clear Form</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Printable summary (hidden on screen, visible on print) -->
+  <div id="printArea" class="print-only">
+
+    <div class="print-logo-wrap">
+      <img src="logo.png" alt="KIMS MACS Onco Sciences" class="print-logo" />
+    </div>
+
+    <div class="print-grid">
+
+      <aside class="print-sidebar">
+        <div class="team-heading">Team Medical Oncology</div>
+
+        <div class="team-doctor">
+          <div class="td-name">Dr Suresh Babu MC</div>
+          <div class="td-qual">MBBS, MD, DM</div>
+          <div class="td-role">Director, Department of Medical Oncology</div>
+          <div class="td-kmc">KMC No: 60989</div>
+        </div>
+
+        <div class="team-doctor">
+          <div class="td-name">Dr Prathyusha Eaga</div>
+          <div class="td-qual">MBBS, MD, DM</div>
+          <div class="td-role">Attending Consultant, Medical Oncology</div>
+          <div class="td-kmc">KMC No: 158021</div>
+        </div>
+
+        <div class="team-doctor">
+          <div class="td-name">Dr Chetan V</div>
+          <div class="td-qual">MBBS, MD, DNB, DM</div>
+          <div class="td-role">Specialist, Medical Oncology</div>
+          <div class="td-kmc">KMC No: 118210</div>
+        </div>
+
+        <div class="team-doctor">
+          <div class="td-name">Dr Vivek B Maleyur</div>
+          <div class="td-qual">MBBS, MD, DM</div>
+          <div class="td-role">Specialist, Medical Oncology</div>
+          <div class="td-kmc">KMC No: 128134</div>
+        </div>
+      </aside>
+
+      <main class="print-main">
+        <div class="print-meta">
+          <div><strong>Name:</strong> <span data-field="name"></span></div>
+          <div><strong>Age / Sex:</strong> <span data-field="ageSex"></span></div>
+          <div><strong>Date:</strong> <span data-field="date"></span></div>
+          <div><strong>MRN:</strong> <span data-field="mrn"></span></div>
+        </div>
+
+        <div class="print-section" data-section="complaints">
+          <h3>Chief Complaints</h3>
+          <p data-field="complaints"></p>
+        </div>
+
+        <div class="print-section" data-section="hpi">
+          <h3>History of Present Illness</h3>
+          <p data-field="hpi"></p>
+        </div>
+
+        <div class="print-section" data-section="pastHistory">
+          <h3>Past History / Comorbidities</h3>
+          <p data-field="pastHistory"></p>
+        </div>
+
+        <div class="print-section" data-section="personalFamily">
+          <h3>Personal &amp; Family History</h3>
+          <p><strong>Personal:</strong> <span data-field="personalHistory"></span></p>
+          <p><strong>Family:</strong> <span data-field="familyHistory"></span></p>
+        </div>
+
+        <div class="print-section" data-section="exam">
+          <h3>Examination</h3>
+          <p data-field="vitalsLine"></p>
+          <p><strong>General:</strong> <span data-field="generalExam"></span></p>
+          <p><strong>Systemic / Local:</strong> <span data-field="systemicExam"></span></p>
+        </div>
+
+        <div class="print-section" data-section="diagnosis">
+          <h3>Diagnosis</h3>
+          <p data-field="diagnosis"></p>
+        </div>
+
+        <div class="print-section" data-section="plan">
+          <h3>Treatment Plan / Advice</h3>
+          <p data-field="plan"></p>
+        </div>
+
+        <div class="print-section print-chemo" data-section="chemo">
+          <h3>Chemotherapy Plan</h3>
+          <div id="printChemoSummary"></div>
+          <table id="printChemoTable" class="print-chemo-table">
+            <thead>
+              <tr>
+                <th>Drug</th>
+                <th>Dose</th>
+                <th>Calculated</th>
+                <th>Schedule</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div id="printChemoNotes" class="print-chemo-notes"></div>
+        </div>
+
+        <div class="print-section" data-section="otherNotes">
+          <h3>Other Notes</h3>
+          <p data-field="otherNotes"></p>
+        </div>
+
+        <div class="print-section" data-section="prescription">
+          <h3>Rx</h3>
+          <p data-field="prescription"></p>
+        </div>
+
+        <div class="print-section" data-section="followup">
+          <h3>Follow-up</h3>
+          <p data-field="followupLine"></p>
+        </div>
+
+        <div class="print-signature">
+          <div class="sig-line"></div>
+          <div data-field="doctorName"></div>
+          <div data-field="doctorDesignation" class="sig-sub"></div>
+          <div data-field="doctorRole" class="sig-sub"></div>
+          <div data-field="doctorKMC" class="sig-sub"></div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="regimens.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
