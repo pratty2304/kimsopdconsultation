@@ -91,7 +91,7 @@ window.REGIMENS = {
     },
     {
       key: 'KEYNOTE-522-PhaseA',
-      name: 'KEYNOTE-522 — Phase A (Pembro + Carbo + Paclitaxel)',
+      name: 'KEYNOTE-522 — Phase A (Pembro + Carboplatin + Paclitaxel)',
       drugs: [
         { name: 'Pembrolizumab', dose: 200, unit: 'mg',    schedule: 'D1, q21d × 4 cycles (Phase A)' },
         { name: 'Paclitaxel',    dose: 80,  unit: 'mg/m²', schedule: 'D1 weekly × 12 weeks (Phase A)' },
@@ -387,7 +387,7 @@ window.REGIMENS = {
   esophageal: [
     {
       key: 'CROSS',
-      name: 'CROSS (Carbo + Paclitaxel + RT)',
+      name: 'CROSS (Carboplatin+ Paclitaxel + RT)',
       drugs: [
         { name: 'Carboplatin', dose: 2,  unit: 'AUC',   schedule: 'D1 weekly × 5 weeks (AUC 2 weekly with concurrent RT)' },
         { name: 'Paclitaxel',  dose: 50, unit: 'mg/m²', schedule: 'D1 weekly × 5 weeks (with concurrent RT)' }
@@ -446,7 +446,7 @@ window.REGIMENS = {
       drugs: [
         { name: 'Carboplatin', dose: 5,   unit: 'AUC',   schedule: 'D1, q21d' },
         { name: 'Paclitaxel',  dose: 175, unit: 'mg/m²', schedule: 'D1, q21d' },
-        { name: 'Bevacizumab', dose: 15,  unit: 'mg/kg', schedule: 'D1, q21d' }
+        { name: 'Bevacizumab', dose: 1200, unit: 'mg',   schedule: '1200 mg flat, D1 q21d' }
       ]
     },
     {
@@ -531,7 +531,7 @@ window.REGIMENS = {
     },
     {
       key: 'EXTREME',
-      name: 'EXTREME (Cetuximab + Carbo + 5-FU)',
+      name: 'EXTREME (Cetuximab + Carboplatin + 5-FU)',
       drugs: [
         { name: 'Cetuximab',      dose: 250, loadingDose: 400, unit: 'mg/m²', schedule: 'Weekly (loading 400 mg/m², then 250 mg/m²)' },
         { name: 'Carboplatin',    dose: 5,   unit: 'AUC',   schedule: 'D1, q21d × 6 cycles' },
@@ -546,30 +546,96 @@ window.REGIMENS = {
       name: 'Cisplatin + Pemetrexed (non-squamous)',
       drugs: [
         { name: 'Cisplatin',  dose: 75,  unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles' },
-        { name: 'Pemetrexed', dose: 500, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles' }
+        { name: 'Pemetrexed', dose: 500, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles (with B12 + folate)' }
       ]
     },
     {
       key: 'Carbo-Pem-Pembro',
-      name: 'Carbo + Pemetrexed + Pembrolizumab (KEYNOTE-189)',
+      name: 'Pembrolizumab + Carboplatin + Pemetrexed (KEYNOTE-189, non-squamous)',
       drugs: [
+        { name: 'Pembrolizumab', dose: 200, unit: 'mg',    schedule: 'D1, q21d up to 35 cycles (~2 years)' },
         { name: 'Carboplatin',   dose: 5,   unit: 'AUC',   schedule: 'D1, q21d × 4 cycles' },
-        { name: 'Pemetrexed',    dose: 500, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles, then maintenance' },
-        { name: 'Pembrolizumab', dose: 200, unit: 'mg',    schedule: 'D1, q21d up to 35 cycles (~2 years)' }
+        { name: 'Pemetrexed',    dose: 500, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles, then maintenance (with B12 + folate)' }
       ]
     },
     {
       key: 'Carbo-Pac-Pembro',
-      name: 'Carbo + Paclitaxel + Pembrolizumab (KEYNOTE-407, squamous)',
+      name: 'Pembrolizumab + Carboplatin + Paclitaxel (KEYNOTE-407, squamous)',
       drugs: [
+        { name: 'Pembrolizumab', dose: 200, unit: 'mg',    schedule: 'D1, q21d up to 35 cycles' },
         { name: 'Carboplatin',   dose: 6,   unit: 'AUC',   schedule: 'D1, q21d × 4 cycles' },
-        { name: 'Paclitaxel',    dose: 200, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles' },
-        { name: 'Pembrolizumab', dose: 200, unit: 'mg',    schedule: 'D1, q21d up to 35 cycles' }
+        { name: 'Paclitaxel',    dose: 200, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles' }
+      ]
+    },
+    {
+      key: 'Nivo-Carbo-Pem',
+      name: 'Nivolumab + Carboplatin + Pemetrexed (non-squamous)',
+      drugs: [
+        { name: 'Nivolumab',  dose: 360, unit: 'mg',    schedule: 'D1, q21d up to 24 months' },
+        { name: 'Carboplatin', dose: 5,  unit: 'AUC',   schedule: 'D1, q21d × 4 cycles' },
+        { name: 'Pemetrexed',  dose: 500, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles, then maintenance (with B12 + folate)' }
+      ]
+    },
+    {
+      key: 'Tisle-Carbo-Pem',
+      name: 'Tislelizumab + Carboplatin + Pemetrexed (RATIONALE-304, non-squamous)',
+      drugs: [
+        { name: 'Tislelizumab', dose: 200, unit: 'mg',    schedule: 'D1, q21d up to 2 years' },
+        { name: 'Carboplatin',  dose: 5,   unit: 'AUC',   schedule: 'D1, q21d × 4 cycles' },
+        { name: 'Pemetrexed',   dose: 500, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles, then maintenance (with B12 + folate)' }
+      ]
+    },
+    {
+      key: 'Durva-PACIFIC',
+      name: 'Durvalumab consolidation (PACIFIC, post-CRT stage III)',
+      drugs: [
+        { name: 'Durvalumab', dose: 1500, unit: 'mg', schedule: 'D1, q28d × 12 months (or 10 mg/kg q14d)' }
+      ]
+    },
+    {
+      key: 'Durva-Carbo-Pem',
+      name: 'Durvalumab + Carboplatin + Pemetrexed (AEGEAN periop, non-squamous)',
+      drugs: [
+        { name: 'Durvalumab',  dose: 1500, unit: 'mg',    schedule: 'D1, q21d × 4 cycles preop, then 1500 mg q28d × 12 cycles postop' },
+        { name: 'Carboplatin', dose: 5,    unit: 'AUC',   schedule: 'D1, q21d × 4 cycles preop' },
+        { name: 'Pemetrexed',  dose: 500,  unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles preop (with B12 + folate)' }
+      ]
+    },
+    {
+      key: 'Osimertinib',
+      name: 'Osimertinib (FLAURA, EGFR exon19del/L858R)',
+      drugs: [
+        { name: 'Osimertinib', dose: 80, unit: 'flat', isOral: true, schedule: 'PO once daily, continuously until progression' }
+      ]
+    },
+    {
+      key: 'Osi-Carbo-Pem',
+      name: 'Osimertinib + Carboplatin + Pemetrexed (FLAURA2, EGFR-mutated)',
+      drugs: [
+        { name: 'Osimertinib', dose: 80,  unit: 'flat',  isOral: true, schedule: 'PO once daily continuously' },
+        { name: 'Carboplatin', dose: 5,   unit: 'AUC',   schedule: 'D1, q21d × 4 cycles' },
+        { name: 'Pemetrexed',  dose: 500, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles, then maintenance (with B12 + folate)' }
+      ]
+    },
+    {
+      key: 'Gefitinib',
+      name: 'Gefitinib (IPASS, EGFR exon19del/L858R)',
+      drugs: [
+        { name: 'Gefitinib', dose: 250, unit: 'flat', isOral: true, schedule: 'PO once daily, continuously until progression' }
+      ]
+    },
+    {
+      key: 'Gef-Carbo-Pem',
+      name: 'Gefitinib + Carboplatin + Pemetrexed (NEJ009, EGFR-mutated)',
+      drugs: [
+        { name: 'Gefitinib',   dose: 250, unit: 'flat',  isOral: true, schedule: 'PO once daily continuously' },
+        { name: 'Carboplatin', dose: 5,   unit: 'AUC',   schedule: 'D1, q21d × 6 cycles' },
+        { name: 'Pemetrexed',  dose: 500, unit: 'mg/m²', schedule: 'D1, q21d × 6 cycles, then maintenance (with B12 + folate)' }
       ]
     },
     {
       key: 'Etop-Carbo-Atezo',
-      name: 'Etoposide + Carbo + Atezolizumab (IMpower133, ES-SCLC)',
+      name: 'Etoposide + Carboplatin + Atezolizumab (IMpower133, ES-SCLC)',
       drugs: [
         { name: 'Etoposide',    dose: 100, unit: 'mg/m²', schedule: 'D1–D3, q21d × 4 cycles' },
         { name: 'Carboplatin',  dose: 5,   unit: 'AUC',   schedule: 'D1, q21d × 4 cycles' },
@@ -689,14 +755,14 @@ window.REGIMENS = {
       key: 'CarboPac-Bev-Ovarian',
       name: 'Carboplatin + Paclitaxel + Bevacizumab',
       drugs: [
-        { name: 'Carboplatin', dose: 5,   unit: 'AUC',   schedule: 'D1, q21d × 6 cycles' },
-        { name: 'Paclitaxel',  dose: 175, unit: 'mg/m²', schedule: 'D1, q21d × 6 cycles' },
-        { name: 'Bevacizumab', dose: 15,  unit: 'mg/kg', schedule: 'D1, q21d' }
+        { name: 'Carboplatin', dose: 5,    unit: 'AUC',   schedule: 'D1, q21d × 6 cycles' },
+        { name: 'Paclitaxel',  dose: 175,  unit: 'mg/m²', schedule: 'D1, q21d × 6 cycles' },
+        { name: 'Bevacizumab', dose: 15,   unit: 'mg/kg', schedule: 'D1, q21d' }
       ]
     },
     {
       key: 'CarboPac-DD-Ovarian',
-      name: 'Dose-dense Carbo + weekly Paclitaxel (JGOG-3016)',
+      name: 'Dose-dense Carboplatin + weekly Paclitaxel (JGOG-3016)',
       drugs: [
         { name: 'Carboplatin', dose: 6,  unit: 'AUC',   schedule: 'D1, q21d × 6 cycles' },
         { name: 'Paclitaxel',  dose: 80, unit: 'mg/m²', schedule: 'D1, D8, D15, q21d × 6 cycles' }

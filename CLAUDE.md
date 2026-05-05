@@ -251,7 +251,7 @@ window.CANCER_TYPES = [
 | cervical | 4 |
 | endometrial | 4 |
 | head_neck | 5 |
-| lung | 5 |
+| lung | 13 (incl. KEYNOTE-189, KEYNOTE-407, Nivo+Carbo+Pem, Tisle+Carbo+Pem RATIONALE-304, PACIFIC Durva consolidation, AEGEAN, Osimertinib FLAURA, FLAURA2, Gefitinib IPASS, NEJ009, IMpower133, LS-SCLC) |
 | lymphoma | 5 |
 | pancreatic | 4 |
 | ovarian | 4 |
