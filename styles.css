@@ -492,6 +492,174 @@ button[disabled] {
   pointer-events: none;
 }
 
+/* ---------- Mobile screen refinements ---------- */
+@media screen and (max-width: 720px) {
+  html, body {
+    font-size: 16px;
+    overflow-x: hidden;
+  }
+
+  .app {
+    width: 100%;
+    padding: 14px 10px 48px;
+  }
+
+  .app-header {
+    gap: 14px;
+    padding: 14px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+  }
+
+  .header-logo {
+    height: 52px;
+    padding: 6px 10px;
+    border-radius: 8px;
+  }
+
+  .header-text h1 {
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .subtitle {
+    font-size: 12.5px;
+    line-height: 1.35;
+  }
+
+  .card {
+    padding: 15px 14px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+  }
+
+  .card h2 {
+    font-size: 13px;
+    letter-spacing: 0.7px;
+  }
+
+  .grid {
+    gap: 12px;
+  }
+
+  label {
+    font-size: 12px;
+    letter-spacing: 0;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    min-height: 46px;
+    padding: 11px 12px;
+    border-radius: 9px;
+    font-size: 16px;
+  }
+
+  textarea {
+    min-height: 86px;
+  }
+
+  .recent-card {
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+  }
+
+  .recent-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .optional-tag {
+    margin-left: 6px;
+    padding: 2px 6px;
+  }
+
+  .toggle-row {
+    align-items: flex-start;
+    line-height: 1.35;
+  }
+
+  .chemo-area {
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+
+  .carb-section {
+    padding: 12px;
+  }
+
+  .chemo-preview {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-left: -2px;
+    margin-right: -2px;
+    padding-bottom: 4px;
+  }
+
+  .chemo-table {
+    min-width: 620px;
+    font-size: 12.5px;
+  }
+
+  .chemo-table thead th,
+  .chemo-table tbody td {
+    padding: 9px 10px;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 18px;
+  }
+
+  .actions button,
+  .recent-row button {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 14px;
+  }
+
+  .recent-row .btn-small {
+    width: 100%;
+  }
+
+  .autosave-hint {
+    text-align: left;
+    line-height: 1.35;
+  }
+
+  .toast {
+    left: 10px;
+    right: 10px;
+    bottom: 14px;
+    transform: none;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .app-header {
+    align-items: flex-start;
+  }
+
+  .header-logo {
+    height: 44px;
+  }
+
+  .header-text h1 {
+    font-size: 17px;
+  }
+
+  .card {
+    padding: 14px 12px;
+  }
+}
+
 /* ==========================================================
    PREVIEW MODE — on-screen editable view of the printable letter
    All preview styles are wrapped in @media screen so they
@@ -716,6 +884,71 @@ body.preview-mode .sig-line {
 body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
 
 } /* end @media screen for preview-mode */
+
+@media screen and (max-width: 720px) {
+  .preview-toolbar {
+    padding: 10px;
+  }
+
+  .preview-toolbar-inner {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: stretch;
+  }
+
+  .preview-hint {
+    flex: 1 0 100%;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .format-group {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  body.preview-mode #printArea {
+    margin: 12px 8px;
+    padding: 14mm 6mm;
+    max-width: none;
+    min-height: auto;
+    border-radius: 0;
+    overflow-x: hidden;
+  }
+
+  body.preview-mode .print-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.preview-mode .print-sidebar {
+    border-right: none;
+    border-bottom: 1pt solid #000;
+    padding: 8pt 0;
+  }
+
+  body.preview-mode .print-main {
+    padding: 10pt 0;
+  }
+
+  body.preview-mode .print-logo-wrap {
+    width: 100%;
+    height: auto;
+    max-height: 26mm;
+  }
+
+  body.preview-mode .print-meta {
+    grid-template-columns: 1fr;
+  }
+
+  body.preview-mode .print-chemo-table {
+    font-size: 8.5pt;
+  }
+
+  body.preview-mode .print-chemo-table th,
+  body.preview-mode .print-chemo-table td {
+    padding: 3pt 4pt;
+  }
+}
 
 /* ==========================================================
    PRINT STYLES — clean letter for the patient
