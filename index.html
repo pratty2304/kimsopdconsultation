@@ -150,11 +150,15 @@
 
         <div id="chemoPlannerArea" class="chemo-area" hidden>
 
-          <div class="grid grid-2">
+          <div class="grid grid-3">
             <label>Cancer Type
               <select id="chemoCancer">
                 <option value="">— Select —</option>
               </select>
+            </label>
+            <label>Search Regimen
+              <input type="text" id="chemoRegimenSearch" placeholder="Select cancer first" disabled autocomplete="off" />
+              <div id="chemoRegimenSearchStatus" class="search-status" aria-live="polite"></div>
             </label>
             <label>Regimen
               <select id="chemoRegimen" disabled>

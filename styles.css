@@ -161,6 +161,17 @@ input[readonly] {
   cursor: default;
 }
 
+.search-status {
+  min-height: 16px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--text-soft);
+}
+
+.search-status.not-found {
+  color: #b42318;
+}
+
 /* When inside a grid cell, textareas should fill */
 label > textarea { margin-top: 0; }
 

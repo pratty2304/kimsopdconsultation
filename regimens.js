@@ -11,6 +11,7 @@ window.REGIMENS = {
     {
       key: 'AC-T-q3w',
       name: 'AC → Paclitaxel (3-weekly)',
+      aliases: ['AC pacli 3', 'AC paclitaxel 3 weekly', 'ACT 3 weekly', 'AC T q3w'],
       drugs: [
         { name: 'Doxorubicin',      dose: 60,  unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles (AC)' },
         { name: 'Cyclophosphamide', dose: 600, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles (AC)' },
@@ -20,6 +21,7 @@ window.REGIMENS = {
     {
       key: 'AC-T-weekly',
       name: 'AC → Paclitaxel (weekly)',
+      aliases: ['AC pacli weekly', 'AC paclitaxel weekly', 'ACT weekly'],
       drugs: [
         { name: 'Doxorubicin',      dose: 60,  unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles (AC)' },
         { name: 'Cyclophosphamide', dose: 600, unit: 'mg/m²', schedule: 'D1, q21d × 4 cycles (AC)' },
@@ -118,6 +120,7 @@ window.REGIMENS = {
     {
       key: 'Paclitaxel-weekly',
       name: 'Paclitaxel weekly (single agent)',
+      aliases: ['pacli wee', 'pacli weekly', 'weekly pacli', 'weekly paclitaxel', 'paclitaxel single agent weekly'],
       drugs: [
         { name: 'Paclitaxel', dose: 80, unit: 'mg/m²', schedule: 'D1 weekly' }
       ]
@@ -169,6 +172,87 @@ window.REGIMENS = {
       name: 'Exemestane',
       drugs: [
         { name: 'Exemestane', dose: 25, unit: 'flat', isOral: true, schedule: 'PO once daily after meals, continuous' }
+      ]
+    },
+    {
+      key: 'Palbociclib-Letrozole',
+      name: 'Palbociclib + Letrozole',
+      aliases: ['PALOMA-1', 'PALOMA-2', 'pal let', 'palbo letrozole'],
+      drugs: [
+        { name: 'Palbociclib', dose: 125, unit: 'flat', isOral: true, schedule: 'PO once daily D1–D21, q28d' },
+        { name: 'Letrozole',   dose: 2.5, unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' }
+      ]
+    },
+    {
+      key: 'Palbociclib-Anastrozole',
+      name: 'Palbociclib + Anastrozole',
+      aliases: ['pal ana', 'palbo anastrozole'],
+      drugs: [
+        { name: 'Palbociclib', dose: 125, unit: 'flat', isOral: true, schedule: 'PO once daily D1–D21, q28d' },
+        { name: 'Anastrozole', dose: 1,   unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' }
+      ]
+    },
+    {
+      key: 'Palbociclib-Exemestane',
+      name: 'Palbociclib + Exemestane',
+      aliases: ['pal exe', 'palbo exemestane'],
+      drugs: [
+        { name: 'Palbociclib', dose: 125, unit: 'flat', isOral: true, schedule: 'PO once daily D1–D21, q28d' },
+        { name: 'Exemestane',  dose: 25,  unit: 'flat', isOral: true, schedule: 'PO once daily after meals, continuous' }
+      ]
+    },
+    {
+      key: 'Ribociclib-Letrozole',
+      name: 'Ribociclib + Letrozole',
+      aliases: ['MONALEESA-2', 'ribo let', 'ribo letrozole'],
+      drugs: [
+        { name: 'Ribociclib', dose: 600, unit: 'flat', isOral: true, schedule: 'PO once daily D1–D21, q28d' },
+        { name: 'Letrozole',  dose: 2.5, unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' }
+      ]
+    },
+    {
+      key: 'Ribociclib-Anastrozole',
+      name: 'Ribociclib + Anastrozole',
+      aliases: ['ribo ana', 'ribo anastrozole'],
+      drugs: [
+        { name: 'Ribociclib',  dose: 600, unit: 'flat', isOral: true, schedule: 'PO once daily D1–D21, q28d' },
+        { name: 'Anastrozole', dose: 1,   unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' }
+      ]
+    },
+    {
+      key: 'Ribociclib-Exemestane',
+      name: 'Ribociclib + Exemestane',
+      aliases: ['ribo exe', 'ribo exemestane'],
+      drugs: [
+        { name: 'Ribociclib', dose: 600, unit: 'flat', isOral: true, schedule: 'PO once daily D1–D21, q28d' },
+        { name: 'Exemestane', dose: 25,  unit: 'flat', isOral: true, schedule: 'PO once daily after meals, continuous' }
+      ]
+    },
+    {
+      key: 'Abemaciclib-Letrozole',
+      name: 'Abemaciclib + Letrozole',
+      aliases: ['MONARCH-3', 'abema let', 'abema letrozole'],
+      drugs: [
+        { name: 'Abemaciclib', dose: 150, unit: 'flat', isOral: true, schedule: 'PO BD continuously' },
+        { name: 'Letrozole',   dose: 2.5, unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' }
+      ]
+    },
+    {
+      key: 'Abemaciclib-Anastrozole',
+      name: 'Abemaciclib + Anastrozole',
+      aliases: ['abema ana', 'abema anastrozole'],
+      drugs: [
+        { name: 'Abemaciclib', dose: 150, unit: 'flat', isOral: true, schedule: 'PO BD continuously' },
+        { name: 'Anastrozole', dose: 1,   unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' }
+      ]
+    },
+    {
+      key: 'Abemaciclib-Exemestane',
+      name: 'Abemaciclib + Exemestane',
+      aliases: ['abema exe', 'abema exemestane'],
+      drugs: [
+        { name: 'Abemaciclib', dose: 150, unit: 'flat', isOral: true, schedule: 'PO BD continuously' },
+        { name: 'Exemestane',  dose: 25,  unit: 'flat', isOral: true, schedule: 'PO once daily after meals, continuous' }
       ]
     },
     {
@@ -420,6 +504,30 @@ window.REGIMENS = {
         { name: 'Docetaxel',       dose: 75,  unit: 'mg/m²', schedule: 'D1, q21d' },
         { name: 'Cisplatin',       dose: 75,  unit: 'mg/m²', schedule: 'D1, q21d' },
         { name: '5-Fluorouracil',  dose: 750, unit: 'mg/m²', schedule: 'CI D1–D5, q21d' }
+      ]
+    },
+    {
+      key: 'CAPOX-Eso',
+      name: 'CAPOX (Capecitabine + Oxaliplatin)',
+      drugs: [
+        { name: 'Oxaliplatin',  dose: 130,  unit: 'mg/m²', schedule: 'D1, q21d' },
+        { name: 'Capecitabine', dose: 1000, unit: 'mg/m²', schedule: 'PO BD D1–D14, q21d' }
+      ]
+    },
+    {
+      key: 'CarboPac-3w-Eso',
+      name: 'Carboplatin + Paclitaxel (3-weekly)',
+      drugs: [
+        { name: 'Carboplatin', dose: 5,   unit: 'AUC',   schedule: 'D1, q21d × 6 cycles' },
+        { name: 'Paclitaxel',  dose: 175, unit: 'mg/m²', schedule: 'D1, q21d × 6 cycles' }
+      ]
+    },
+    {
+      key: 'CarboPac-Weekly-Eso',
+      name: 'Carboplatin + Paclitaxel (weekly)',
+      drugs: [
+        { name: 'Carboplatin', dose: 2,  unit: 'AUC',   schedule: 'D1 weekly' },
+        { name: 'Paclitaxel',  dose: 80, unit: 'mg/m²', schedule: 'D1 weekly' }
       ]
     }
   ],
@@ -780,7 +888,7 @@ window.REGIMENS = {
   biliary: [
     {
       key: 'GemCis',
-      name: 'GemCis (Gemcitabine + Cisplatin)',
+      name: 'Gemcitabine + Cisplatin',
       drugs: [
         { name: 'Gemcitabine', dose: 1000, unit: 'mg/m²', schedule: 'D1, D8, q21d × 8 cycles' },
         { name: 'Cisplatin',   dose: 25,   unit: 'mg/m²', schedule: 'D1, D8, q21d × 8 cycles' }
@@ -788,7 +896,7 @@ window.REGIMENS = {
     },
     {
       key: 'Durva-GemCis',
-      name: 'Durvalumab + GemCis (TOPAZ-1)',
+      name: 'Durvalumab + Gemcitabine + Cisplatin (TOPAZ-1)',
       drugs: [
         { name: 'Durvalumab',  dose: 1500, unit: 'mg',    schedule: 'D1, q21d × 8 cycles, then 1500 mg q28d maintenance' },
         { name: 'Gemcitabine', dose: 1000, unit: 'mg/m²', schedule: 'D1, D8, q21d × 8 cycles' },
@@ -797,7 +905,7 @@ window.REGIMENS = {
     },
     {
       key: 'Pembro-GemCis',
-      name: 'Pembrolizumab + GemCis (KEYNOTE-966)',
+      name: 'Pembrolizumab + Gemcitabine + Cisplatin (KEYNOTE-966)',
       drugs: [
         { name: 'Pembrolizumab', dose: 200,  unit: 'mg',    schedule: 'D1, q21d up to 35 cycles' },
         { name: 'Gemcitabine',   dose: 1000, unit: 'mg/m²', schedule: 'D1, D8, q21d × 8 cycles' },

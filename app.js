@@ -228,20 +228,214 @@
     return reg.drugs.some((d) => d.unit === 'AUC');
   }
 
+  function normalizeRegimenSearch(value) {
+    return (value || '')
+      .toString()
+      .toLowerCase()
+      .replace(/[→+/_(),.;:–—-]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function compactRegimenSearch(value) {
+    return normalizeRegimenSearch(value).replace(/[^a-z0-9]/g, '');
+  }
+
+  function regimenSearchTokens(value) {
+    return normalizeRegimenSearch(value).split(' ').filter(Boolean);
+  }
+
+  function regimenDrugInitials(reg) {
+    return (reg.drugs || [])
+      .map((d) => compactRegimenSearch(d.name).charAt(0))
+      .filter(Boolean)
+      .join('');
+  }
+
+  function regimenSearchFields(reg) {
+    const drugNames = (reg.drugs || []).map((d) => d.name).join(' ');
+    const drugSchedules = (reg.drugs || []).map((d) => d.schedule).join(' ');
+    const aliasList = Array.isArray(reg.aliases) ? reg.aliases : [];
+    const aliases = aliasList.join(' ');
+    return [
+      reg.name,
+      reg.key,
+      ...aliasList,
+      aliases,
+      drugNames,
+      drugSchedules,
+      `${reg.name} ${reg.key}`,
+      `${reg.name} ${aliases}`,
+      `${reg.name} ${drugNames}`,
+      `${reg.name} ${drugSchedules}`,
+      `${reg.name} ${reg.key} ${aliases} ${drugNames} ${drugSchedules}`,
+      regimenDrugInitials(reg)
+    ].filter(Boolean);
+  }
+
+  function isSubsequence(needle, haystack) {
+    if (!needle) return false;
+    let j = 0;
+    for (let i = 0; i < haystack.length && j < needle.length; i += 1) {
+      if (haystack[i] === needle[j]) j += 1;
+    }
+    return j === needle.length;
+  }
+
+  function levenshteinDistance(a, b) {
+    if (a === b) return 0;
+    if (!a.length) return b.length;
+    if (!b.length) return a.length;
+    const prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+    const curr = new Array(b.length + 1);
+    for (let i = 1; i <= a.length; i += 1) {
+      curr[0] = i;
+      for (let j = 1; j <= b.length; j += 1) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        curr[j] = Math.min(
+          curr[j - 1] + 1,
+          prev[j] + 1,
+          prev[j - 1] + cost
+        );
+      }
+      for (let j = 0; j <= b.length; j += 1) prev[j] = curr[j];
+    }
+    return prev[b.length];
+  }
+
+  function scoreRegimenSearch(query, reg) {
+    const q = normalizeRegimenSearch(query);
+    const qc = compactRegimenSearch(query);
+    const qTokens = regimenSearchTokens(query);
+    if (!q || !qc) return 0;
+
+    let best = 0;
+    regimenSearchFields(reg).forEach((field) => {
+      const f = normalizeRegimenSearch(field);
+      const fc = compactRegimenSearch(field);
+      const fTokens = regimenSearchTokens(field);
+
+      if (f === q || fc === qc) best = Math.max(best, 100);
+      if (f.startsWith(q) || fc.startsWith(qc)) best = Math.max(best, 94);
+      if (q.length >= 3 && f.includes(q)) best = Math.max(best, 90);
+      if (qc.length >= 3 && fc.includes(qc)) best = Math.max(best, 88);
+
+      if (qTokens.length > 1 && qTokens.every((qt) => fTokens.some((ft) => ft.startsWith(qt) || ft.includes(qt)))) {
+        best = Math.max(best, 86);
+      }
+
+      if (qc.length >= 2 && isSubsequence(qc, fc)) {
+        best = Math.max(best, qc.length <= 3 ? 72 : 78);
+      }
+
+      if (qc.length >= 4) {
+        fTokens.forEach((token) => {
+          const tc = compactRegimenSearch(token);
+          if (tc.length < 4) return;
+          const maxLen = Math.max(qc.length, tc.length);
+          const similarity = 1 - (levenshteinDistance(qc, tc) / maxLen);
+          if (similarity >= 0.72) best = Math.max(best, Math.round(70 + similarity * 18));
+        });
+      }
+    });
+
+    return best;
+  }
+
+  function getRegimenSearchMatches(value) {
+    const cancer = document.getElementById('chemoCancer').value;
+    const needle = compactRegimenSearch(value);
+    if (!cancer || !needle || !window.REGIMENS[cancer]) return [];
+    return window.REGIMENS[cancer]
+      .map((reg) => ({ reg, score: scoreRegimenSearch(value, reg) }))
+      .filter((item) => item.score >= (needle.length <= 2 ? 72 : 60))
+      .sort((a, b) => b.score - a.score);
+  }
+
+  function populateRegimenSelect(regimens, placeholder) {
+    const regSel = document.getElementById('chemoRegimen');
+    if (!regSel) return;
+    regSel.innerHTML = '';
+    const firstOpt = document.createElement('option');
+    firstOpt.value = '';
+    firstOpt.textContent = placeholder || '— Select regimen —';
+    regSel.appendChild(firstOpt);
+    regimens.forEach((r) => {
+      const opt = document.createElement('option');
+      opt.value = r.key;
+      opt.textContent = r.name;
+      regSel.appendChild(opt);
+    });
+  }
+
+  function setRegimenSearchStatus(message, statusClass) {
+    const status = document.getElementById('chemoRegimenSearchStatus');
+    if (!status) return;
+    status.textContent = message || '';
+    status.className = statusClass ? `search-status ${statusClass}` : 'search-status';
+  }
+
+  function syncRegimenSearchFromSelect() {
+    const input = document.getElementById('chemoRegimenSearch');
+    const reg = getSelectedRegimen();
+    if (input) input.value = reg ? reg.name : '';
+    setRegimenSearchStatus('', '');
+  }
+
+  function onRegimenSearchInput() {
+    const input = document.getElementById('chemoRegimenSearch');
+    const regSel = document.getElementById('chemoRegimen');
+    if (!input || !regSel) return;
+    const query = input.value.trim();
+    const cancer = document.getElementById('chemoCancer').value;
+    if (!query) {
+      populateRegimenSelect(cancer && window.REGIMENS[cancer] ? window.REGIMENS[cancer] : [], '— Select regimen —');
+      regSel.value = '';
+      setRegimenSearchStatus('', '');
+      onRegimenChange();
+      return;
+    }
+    const matches = getRegimenSearchMatches(query);
+    populateRegimenSelect(
+      matches.map((m) => m.reg),
+      matches.length ? `— ${matches.length} match${matches.length === 1 ? '' : 'es'} found —` : '— Not found —'
+    );
+    const best = matches[0];
+    const second = matches[1];
+    const clearBest = best && (
+      (best.score === 100 && (!second || second.score < 100)) ||
+      !second ||
+      best.score - second.score >= 8
+    );
+    if (clearBest) {
+      regSel.value = best.reg.key;
+      setRegimenSearchStatus(matches.length > 1 ? `${matches.length} matches found` : '', '');
+    } else {
+      regSel.value = '';
+      setRegimenSearchStatus(matches.length ? `${matches.length} matches found. Choose from Regimen.` : 'Not found', matches.length ? '' : 'not-found');
+    }
+    onRegimenChange();
+  }
+
   function onCancerChange() {
     const cancer = document.getElementById('chemoCancer').value;
     const regSel = document.getElementById('chemoRegimen');
-    regSel.innerHTML = '<option value="">— Select regimen —</option>';
+    const regSearch = document.getElementById('chemoRegimenSearch');
+    if (regSearch) regSearch.value = '';
+    setRegimenSearchStatus('', '');
     if (cancer && window.REGIMENS[cancer]) {
-      window.REGIMENS[cancer].forEach((r) => {
-        const opt = document.createElement('option');
-        opt.value = r.key;
-        opt.textContent = r.name;
-        regSel.appendChild(opt);
-      });
+      populateRegimenSelect(window.REGIMENS[cancer], '— Select regimen —');
       regSel.disabled = false;
+      if (regSearch) {
+        regSearch.disabled = false;
+        regSearch.placeholder = 'Search regimen';
+      }
     } else {
       regSel.disabled = true;
+      if (regSearch) {
+        regSearch.disabled = true;
+        regSearch.placeholder = 'Select cancer first';
+      }
     }
     onRegimenChange();
   }
@@ -392,7 +586,16 @@
     if (cancerSel) cancerSel.addEventListener('change', onCancerChange);
 
     const regSel = document.getElementById('chemoRegimen');
-    if (regSel) regSel.addEventListener('change', onRegimenChange);
+    if (regSel) regSel.addEventListener('change', () => {
+      syncRegimenSearchFromSelect();
+      onRegimenChange();
+    });
+
+    const regSearch = document.getElementById('chemoRegimenSearch');
+    if (regSearch) {
+      regSearch.addEventListener('input', onRegimenSearchInput);
+      regSearch.addEventListener('change', onRegimenSearchInput);
+    }
 
     // Re-render chemo table when patient details (age, sex) or creatinine change
     ['age', 'sex', 'chemoCreat'].forEach((id) => {
@@ -460,6 +663,7 @@
       onCancerChange();
       const regSel = document.getElementById('chemoRegimen');
       if (regSel && state.chemoRegimen) regSel.value = state.chemoRegimen;
+      syncRegimenSearchFromSelect();
       onRegimenChange();
     }
     // Recalc BSA + chemo table
@@ -479,6 +683,9 @@
     document.getElementById('chemoTablePreview').innerHTML = '';
     const regSel = document.getElementById('chemoRegimen');
     if (regSel) { regSel.innerHTML = '<option value="">— Select cancer first —</option>'; regSel.disabled = true; }
+    const regSearch = document.getElementById('chemoRegimenSearch');
+    if (regSearch) { regSearch.value = ''; regSearch.disabled = true; regSearch.placeholder = 'Select cancer first'; }
+    setRegimenSearchStatus('', '');
     document.getElementById('bsa').value = '';
   }
 
@@ -679,13 +886,19 @@
     const sel = document.getElementById('recentPatientsSelect');
     const id = sel.value;
     if (!id) return;
-    const ok = confirm('Delete this saved patient?');
+    const ok = confirm('Delete this saved patient? The form will also be cleared.');
     if (!ok) return;
     const patients = loadPatients().filter((p) => p.id !== id);
     savePatientsList(patients);
     rebuildRecentPatientsDropdown();
     sel.value = '';
     document.getElementById('deletePatientBtn').hidden = true;
+    // Clear the form too — since the data we just deleted was loaded into it
+    clearFormState();
+    discardDraft();
+    if (typeof userHasInteracted !== 'undefined') userHasInteracted = false;
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+    updateResumeButton();
     showToast('Patient deleted');
   });
 
