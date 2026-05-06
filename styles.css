@@ -330,6 +330,231 @@ button {
 }
 
 /* ==========================================================
+   PREVIEW MODE — on-screen editable view of the printable letter
+   All preview styles are wrapped in @media screen so they
+   don't leak into the print stylesheet when printing from preview.
+   ========================================================== */
+
+@media screen {
+
+.preview-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  padding: 12px 20px;
+}
+
+.preview-toolbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.preview-hint {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-soft);
+  font-style: italic;
+}
+
+.format-group {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 4px;
+  background: var(--surface-soft);
+  border-radius: 8px;
+}
+
+.fmt-btn {
+  width: 34px;
+  height: 32px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  background: white;
+  color: var(--text);
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.fmt-btn:hover {
+  background: var(--primary-soft);
+  border-color: #c9e1ef;
+}
+
+.fmt-btn:active {
+  background: var(--primary);
+  color: white;
+}
+
+.fmt-hilite .hilite-swatch {
+  background: #fff59d;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+/* Hide the form when previewing */
+body.preview-mode .app { display: none; }
+
+/* Show the print area on screen during preview */
+body.preview-mode #printArea {
+  display: block !important;
+  background: white;
+  margin: 24px auto;
+  padding: 24mm 12mm 14mm 12mm;
+  max-width: 210mm;
+  min-height: 297mm;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  border-radius: 4px;
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #000;
+}
+
+/* Inline-edit affordances */
+body.preview-mode .editable {
+  outline: 1px dashed transparent;
+  outline-offset: 2px;
+  border-radius: 3px;
+  transition: outline-color 0.15s, background 0.15s;
+  cursor: text;
+}
+
+body.preview-mode .editable:hover {
+  outline-color: #cfd6da;
+  background: #fafafa;
+}
+
+body.preview-mode .editable:focus {
+  outline: 2px solid var(--primary);
+  background: var(--primary-soft);
+}
+
+/* Re-create the print layout on screen */
+body.preview-mode .print-grid {
+  display: grid;
+  grid-template-columns: 47mm 1fr;
+  border-top: 1.2pt solid #000;
+  border-bottom: 1.2pt solid #000;
+}
+body.preview-mode .print-sidebar {
+  border-right: 1pt solid #000;
+  padding: 10pt 10pt 10pt 0;
+}
+body.preview-mode .team-heading {
+  font-weight: 700;
+  font-size: 11pt;
+  text-transform: uppercase;
+  letter-spacing: 0.6pt;
+  color: #2c93c9;
+  border-bottom: 1pt solid #2c93c9;
+  padding-bottom: 4pt;
+  margin-bottom: 10pt;
+}
+body.preview-mode .team-doctor { margin-bottom: 12pt; }
+body.preview-mode .td-name { font-weight: 700; font-size: 10pt; }
+body.preview-mode .td-qual { font-size: 9pt; font-style: italic; color: #333; }
+body.preview-mode .td-role { font-size: 8.5pt; color: #444; line-height: 1.3; }
+body.preview-mode .td-dept { font-size: 8.5pt; color: #444; line-height: 1.3; }
+body.preview-mode .td-kmc  { font-size: 8.5pt; color: #555; margin-top: 2pt; }
+body.preview-mode .print-main { padding: 10pt 0 10pt 12pt; }
+body.preview-mode .print-logo-wrap {
+  width: 70mm;
+  height: 30mm;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4mm;
+}
+body.preview-mode .print-logo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+body.preview-mode .print-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4pt 18pt;
+  margin-bottom: 12pt;
+  padding: 6pt 10pt;
+  background: #f4f1ee;
+  border-radius: 4pt;
+  font-size: 10pt;
+}
+body.preview-mode .print-section { margin-bottom: 10pt; }
+body.preview-mode .print-section h3 {
+  font-size: 10pt;
+  text-transform: uppercase;
+  letter-spacing: 0.6pt;
+  color: #2c93c9;
+  border-bottom: 0.6pt solid #b8d8e8;
+  padding-bottom: 1pt;
+  margin: 0 0 3pt 0;
+}
+body.preview-mode .print-section p {
+  margin: 3pt 0;
+  white-space: pre-wrap;
+  line-height: 1.4;
+  font-size: 10.5pt;
+}
+body.preview-mode .print-section[data-section="prescription"] h3 {
+  font-size: 14pt;
+  font-style: italic;
+  border-bottom: none;
+  margin-bottom: 4pt;
+}
+body.preview-mode .print-section[data-section="prescription"] p {
+  padding-left: 10pt;
+  border-left: 1.5pt solid #b8d8e8;
+}
+body.preview-mode .print-chemo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+  margin-top: 4pt;
+}
+body.preview-mode .print-chemo-table th,
+body.preview-mode .print-chemo-table td {
+  border: 0.5pt solid #999;
+  padding: 4pt 6pt;
+  text-align: left;
+  vertical-align: top;
+}
+body.preview-mode .print-chemo-table th {
+  background: #e3f1f9;
+  color: #2c93c9;
+  font-size: 9pt;
+  text-transform: uppercase;
+  letter-spacing: 0.4pt;
+}
+body.preview-mode .chemo-summary-line { font-size: 9.5pt; margin: 4pt 0 6pt 0; }
+body.preview-mode .print-chemo-notes  { font-size: 9.5pt; margin-top: 6pt; }
+body.preview-mode .print-signature {
+  margin-top: 28pt;
+  text-align: right;
+}
+body.preview-mode .sig-line {
+  display: inline-block;
+  width: 180pt;
+  border-top: 0.8pt solid #333;
+  margin-bottom: 4pt;
+}
+body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
+
+} /* end @media screen for preview-mode */
+
+/* ==========================================================
    PRINT STYLES — clean letter for the patient
    ========================================================== */
 
@@ -339,6 +564,19 @@ button {
   @page {
     size: A4;
     margin: 5mm 8mm 14mm 8mm;
+  }
+
+  /* Force highlighted text and any inline styled colours to print as-is */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure user-applied formatting from preview is preserved */
+  span[style*="background"], span[style*="hiliteColor"],
+  b, strong, i, em, u {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   body {
@@ -358,7 +596,7 @@ button {
   /* Two-column print grid bordered top & bottom */
   .print-grid {
     display: grid;
-    grid-template-columns: 52mm 1fr;
+    grid-template-columns: 47mm 1fr;
     gap: 0;
     border-top: 1.2pt solid #000;
     border-bottom: 1.2pt solid #000;
@@ -399,6 +637,12 @@ button {
   }
 
   .td-role {
+    font-size: 8.5pt;
+    color: #444;
+    line-height: 1.3;
+  }
+
+  .td-dept {
     font-size: 8.5pt;
     color: #444;
     line-height: 1.3;

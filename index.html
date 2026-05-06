@@ -189,13 +189,30 @@
       </section>
 
       <div class="actions">
-        <button type="button" id="printBtn" class="btn-primary">Print / Save as PDF</button>
+        <button type="button" id="previewBtn" class="btn-primary">Preview &amp; Edit</button>
+        <button type="button" id="printBtn" class="btn-ghost">Print without Preview</button>
         <button type="button" id="clearBtn" class="btn-ghost">Clear Form</button>
       </div>
     </form>
   </div>
 
-  <!-- Printable summary (hidden on screen, visible on print) -->
+  <!-- Preview-mode toolbar (visible only when previewing) -->
+  <div id="previewToolbar" class="preview-toolbar no-print" hidden>
+    <div class="preview-toolbar-inner">
+      <div class="format-group" title="Select text first, then apply formatting">
+        <button type="button" class="fmt-btn" data-cmd="bold" title="Bold (Ctrl/Cmd+B)"><b>B</b></button>
+        <button type="button" class="fmt-btn" data-cmd="italic" title="Italic (Ctrl/Cmd+I)"><i>I</i></button>
+        <button type="button" class="fmt-btn" data-cmd="underline" title="Underline (Ctrl/Cmd+U)"><u>U</u></button>
+        <button type="button" class="fmt-btn fmt-hilite" data-cmd="highlight" title="Highlight selected text"><span class="hilite-swatch">H</span></button>
+        <button type="button" class="fmt-btn" data-cmd="clear" title="Remove formatting from selection">⌫</button>
+      </div>
+      <span class="preview-hint">Select text and use formatting buttons or Ctrl/Cmd+B/I/U.</span>
+      <button type="button" id="previewBackBtn" class="btn-ghost">← Back to Form</button>
+      <button type="button" id="previewPrintBtn" class="btn-primary">Print / Save as PDF</button>
+    </div>
+  </div>
+
+  <!-- Printable summary (hidden on screen, visible on print or in preview mode) -->
   <div id="printArea" class="print-only">
 
     <div class="print-logo-wrap">
@@ -210,28 +227,32 @@
         <div class="team-doctor">
           <div class="td-name">Dr Suresh Babu MC</div>
           <div class="td-qual">MBBS, MD, DM</div>
-          <div class="td-role">Director, Department of Medical Oncology</div>
+          <div class="td-role">Director</div>
+          <div class="td-dept">Department of Medical Oncology</div>
           <div class="td-kmc">KMC No: 60989</div>
         </div>
 
         <div class="team-doctor">
           <div class="td-name">Dr Prathyusha Eaga</div>
           <div class="td-qual">MBBS, MD, DM</div>
-          <div class="td-role">Attending Consultant, Medical Oncology</div>
+          <div class="td-role">Attending Consultant</div>
+          <div class="td-dept">Medical Oncology</div>
           <div class="td-kmc">KMC No: 158021</div>
         </div>
 
         <div class="team-doctor">
           <div class="td-name">Dr Chetan V</div>
           <div class="td-qual">MBBS, MD, DNB, DM</div>
-          <div class="td-role">Specialist, Medical Oncology</div>
+          <div class="td-role">Specialist</div>
+          <div class="td-dept">Medical Oncology</div>
           <div class="td-kmc">KMC No: 118210</div>
         </div>
 
         <div class="team-doctor">
           <div class="td-name">Dr Vivek B Maleyur</div>
           <div class="td-qual">MBBS, MD, DM</div>
-          <div class="td-role">Specialist, Medical Oncology</div>
+          <div class="td-role">Specialist</div>
+          <div class="td-dept">Medical Oncology</div>
           <div class="td-kmc">KMC No: 128134</div>
         </div>
       </aside>

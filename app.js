@@ -442,14 +442,105 @@
     notesEl.innerHTML = notes ? `<strong>Notes:</strong> ${notes.replace(/\n/g, '<br>')}` : '';
   }
 
-  // Print button
+  // ============================================================
+  // Preview & Edit mode — show printable layout on screen, allow inline edits
+  // ============================================================
+
+  function enterPreviewMode() {
+    buildPrintSummary();
+    setPdfTitle();
+
+    // Make editable elements contenteditable inside the print area
+    const printArea = document.getElementById('printArea');
+    const editableSelectors = [
+      '[data-field]',                      // all populated patient data spans
+      '.print-section p',                  // section paragraphs
+      '#printChemoSummary',                // chemo summary line
+      '#printChemoTable td',               // chemo table cells
+      '#printChemoNotes',                  // chemo notes
+      '.print-meta div',                   // patient meta values
+      '.team-doctor div',                  // team list (in case of correction)
+      '.print-signature div'               // signature block
+    ];
+    editableSelectors.forEach((sel) => {
+      printArea.querySelectorAll(sel).forEach((el) => {
+        el.setAttribute('contenteditable', 'true');
+        el.classList.add('editable');
+      });
+    });
+
+    // Switch to preview mode
+    document.body.classList.add('preview-mode');
+    document.getElementById('previewToolbar').hidden = false;
+
+    // Scroll preview to top
+    window.scrollTo(0, 0);
+  }
+
+  function exitPreviewMode() {
+    document.body.classList.remove('preview-mode');
+    document.getElementById('previewToolbar').hidden = true;
+
+    // Strip contenteditable so re-entering preview rebuilds cleanly from form data
+    const printArea = document.getElementById('printArea');
+    printArea.querySelectorAll('[contenteditable="true"]').forEach((el) => {
+      el.removeAttribute('contenteditable');
+      el.classList.remove('editable');
+    });
+    restoreTitle();
+  }
+
+  // Preview button (shows on-screen editable version)
+  const previewBtn = $('#previewBtn');
+  if (previewBtn) {
+    previewBtn.addEventListener('click', enterPreviewMode);
+  }
+
+  // Formatting toolbar buttons (Bold / Italic / Underline / Highlight / Clear)
+  // Use mousedown (not click) so the editable element keeps its selection.
+  document.querySelectorAll('.fmt-btn').forEach((btn) => {
+    btn.addEventListener('mousedown', (e) => {
+      e.preventDefault(); // keep current selection in the contenteditable element
+      const cmd = btn.dataset.cmd;
+      if (cmd === 'highlight') {
+        // Toggle yellow highlight on selection. If already yellow, clear it.
+        const sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+        // execCommand('hiliteColor') needs styleWithCSS=true in some browsers
+        try { document.execCommand('styleWithCSS', false, true); } catch (err) {}
+        document.execCommand('hiliteColor', false, '#fff59d');
+      } else if (cmd === 'clear') {
+        document.execCommand('removeFormat');
+        document.execCommand('hiliteColor', false, 'transparent');
+      } else {
+        document.execCommand(cmd, false, null);
+      }
+    });
+  });
+
+  // Back from preview → return to form
+  const previewBackBtn = $('#previewBackBtn');
+  if (previewBackBtn) {
+    previewBackBtn.addEventListener('click', exitPreviewMode);
+  }
+
+  // Print from preview — uses current edited state (DOM)
+  const previewPrintBtn = $('#previewPrintBtn');
+  if (previewPrintBtn) {
+    previewPrintBtn.addEventListener('click', () => {
+      setPdfTitle();
+      window.print();
+      setTimeout(restoreTitle, 1500);
+    });
+  }
+
+  // "Print without preview" button — direct print, no edit step
   const printBtn = $('#printBtn');
   if (printBtn) {
     printBtn.addEventListener('click', () => {
       buildPrintSummary();
       setPdfTitle();
       window.print();
-      // Restore page title shortly after the print dialog closes
       setTimeout(restoreTitle, 1500);
     });
   }
