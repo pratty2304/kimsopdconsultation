@@ -164,30 +164,17 @@ input[readonly] {
 /* When inside a grid cell, textareas should fill */
 label > textarea { margin-top: 0; }
 
-/* ---------- Restore banner ---------- */
-.restore-banner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  background: linear-gradient(90deg, var(--primary-soft), var(--accent-soft));
-  border: 1px solid #c9e1ef;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  font-size: 14px;
-  color: var(--text);
-}
-
-.rb-icon {
-  font-size: 18px;
-  color: var(--primary);
-}
-
-.rb-text { flex: 1; }
-
 .btn-small {
   padding: 6px 14px;
   font-size: 13px;
+}
+
+.autosave-hint {
+  margin: 10px 0 0 0;
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-soft);
+  font-style: italic;
 }
 
 /* ---------- Recent patients ---------- */
@@ -485,6 +472,13 @@ button {
 .btn-ghost:hover {
   background: var(--surface-soft);
   color: var(--text);
+}
+
+button:disabled,
+button[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* ==========================================================

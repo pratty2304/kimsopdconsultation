@@ -414,6 +414,9 @@
   const LS_PATIENTS_KEY = 'summarygenerator.patients';
   const MAX_PATIENTS    = 50;
 
+  // One-time cleanup of any stale dismissal key from earlier banner-based design
+  try { localStorage.removeItem('summarygenerator.draftDismissedAt'); } catch (e) {}
+
   // Fields to persist (form state)
   const FIELDS = [
     'name', 'age', 'sex', 'date', 'mrn',
@@ -506,9 +509,11 @@
       const state = getFormState();
       if (!isDraftMeaningful(state)) {
         localStorage.removeItem(LS_DRAFT_KEY);
+        if (typeof updateResumeButton === 'function') updateResumeButton();
         return;
       }
       localStorage.setItem(LS_DRAFT_KEY, JSON.stringify({ savedAt: Date.now(), state }));
+      if (typeof updateResumeButton === 'function') updateResumeButton();
     } catch (e) {
       console.warn('Autosave failed', e);
     }
@@ -538,26 +543,8 @@
     el.addEventListener('change', markInteracted);
   });
 
-  // Show restore banner on load if a meaningful, recent draft exists.
-  // Drafts older than 7 days are auto-discarded silently.
+  // Auto-discard drafts older than 7 days
   const DRAFT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
-  (function maybeShowRestoreBanner() {
-    const draft = loadDraft();
-    if (!draft || !draft.state) return;
-    if (!isDraftMeaningful(draft.state)) {
-      discardDraft();
-      return;
-    }
-    if (draft.savedAt && (Date.now() - draft.savedAt) > DRAFT_MAX_AGE_MS) {
-      discardDraft();
-      return;
-    }
-    // Add a relative-time hint to the banner
-    const ago = formatRelativeTime(draft.savedAt);
-    const text = document.querySelector('#restoreBanner .rb-text');
-    if (text && ago) text.textContent = `Unsaved draft from ${ago} found.`;
-    document.getElementById('restoreBanner').hidden = false;
-  })();
 
   function formatRelativeTime(ts) {
     if (!ts) return '';
@@ -571,24 +558,41 @@
     return `${days} day${days > 1 ? 's' : ''} ago`;
   }
 
-  document.getElementById('restoreBtn')?.addEventListener('click', () => {
+  // ----- "Resume Last Draft" button state -----
+  function updateResumeButton() {
+    const btn = document.getElementById('resumeBtn');
+    if (!btn) return;
     const draft = loadDraft();
-    if (draft && draft.state) {
-      setFormState(draft.state);
-      showToast('Draft restored');
+    const hasMeaningful = draft && draft.state && isDraftMeaningful(draft.state);
+    const expired = draft && draft.savedAt && (Date.now() - draft.savedAt) > DRAFT_MAX_AGE_MS;
+    if (!hasMeaningful || expired) {
+      if (expired) discardDraft();
+      btn.disabled = true;
+      btn.textContent = 'Resume Last Draft';
+      btn.title = 'No saved draft on this device';
+      return;
     }
-    document.getElementById('restoreBanner').hidden = true;
+    btn.disabled = false;
+    btn.textContent = `Resume Last Draft (${formatRelativeTime(draft.savedAt)})`;
+    btn.title = 'Restore the auto-saved draft from this device';
+  }
+
+  document.getElementById('resumeBtn')?.addEventListener('click', () => {
+    const draft = loadDraft();
+    if (!draft || !draft.state) {
+      showToast('No saved draft found');
+      updateResumeButton();
+      return;
+    }
+    setFormState(draft.state);
+    updateResumeButton();
+    showToast('Draft restored');
   });
 
-  document.getElementById('discardBtn')?.addEventListener('click', () => {
-    // Clear browser-restored field values too, so reload doesn't bring them back
-    clearFormState();
-    discardDraft();
-    document.getElementById('restoreBanner').hidden = true;
-    userHasInteracted = false; // prevent any pending autosave from re-creating a draft
-    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
-    showToast('Draft discarded');
-  });
+  // Initial check on page load
+  updateResumeButton();
+  // Re-check every minute so the relative-time label stays roughly current
+  setInterval(updateResumeButton, 60 * 1000);
 
   // ----- Saved patients -----
   function loadPatients() {
@@ -655,7 +659,7 @@
     savePatientsList(patients);
     rebuildRecentPatientsDropdown();
     discardDraft();
-    document.getElementById('restoreBanner').hidden = true;
+    updateResumeButton();
     showToast(existing ? 'Patient updated' : 'Patient saved');
   });
 
@@ -697,10 +701,12 @@
       if (!ok) return;
       clearFormState();
       discardDraft();
-      document.getElementById('restoreBanner').hidden = true;
+      userHasInteracted = false;
+      if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
       const sel = document.getElementById('recentPatientsSelect');
       if (sel) sel.value = '';
       document.getElementById('deletePatientBtn').hidden = true;
+      updateResumeButton();
       showToast('Form cleared');
     });
   }
