@@ -39,6 +39,103 @@
     nodes.forEach((n) => { n.textContent = text || '—'; });
   }
 
+  const HPI_AUTO_FORMAT_PATTERNS = [
+    /PET[\s-]*CT/gi,
+    /Tumou?r\s+markers?/gi,
+    /2D\s*Echo/gi,
+    /Flow\s+cytometry/gi,
+    /Bone\s+marrow/gi,
+    /Histopathology/gi,
+    /Immunophenotyping/gi,
+    /Colonoscopy/gi,
+    /Mammography/gi,
+    /Mammogram/gi,
+    /Endoscopy/gi,
+    /Ultrasound/gi,
+    /Biopsy/gi,
+    /CECT/gi,
+    /MRI/gi,
+    /IHC/gi,
+    /ECG/gi,
+    /CBC/gi,
+    /RFT/gi,
+    /LFT/gi,
+    /NGS/gi,
+    /USG/gi,
+    /X[\s-]*ray/gi,
+    /FNAC/gi,
+    /HPE/gi,
+    /BMA/gi,
+    /BMB/gi,
+    /\bCT\b/gi
+  ];
+
+  const HPI_HEADING_LINE_PATTERN =
+    /^[ \t]*(?:PET[\s-]*CT|Tumou?r\s+markers?|2D\s*Echo|Flow\s+cytometry|Bone\s+marrow|Histopathology|Immunophenotyping|Colonoscopy|Mammography|Mammogram|Endoscopy|Ultrasound|Biopsy|CECT|MRI|IHC|ECG|CBC|RFT|LFT|NGS|USG|X[\s-]*ray|FNAC|HPE|BMA|BMB|\bCT\b)[^\n\r]*/gim;
+
+  const HPI_DATE_PATTERNS = [
+    /\b\d{1,2}[/. -]\d{1,2}[/. -]\d{2,4}\b/g,
+    /\b\d{1,2}[\s/.-]*(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[\s/.-]*\d{2,4}\b/gi,
+    /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[\s/.-]*(?:\d{1,2}[\s,/-]*)?\d{2,4}\b/gi
+  ];
+
+  function collectHpiFormatMatches(text) {
+    const matches = [];
+    HPI_HEADING_LINE_PATTERN.lastIndex = 0;
+    let headingMatch;
+    while ((headingMatch = HPI_HEADING_LINE_PATTERN.exec(text)) !== null) {
+      matches.push({
+        start: headingMatch.index,
+        end: headingMatch.index + headingMatch[0].length
+      });
+    }
+
+    [...HPI_AUTO_FORMAT_PATTERNS, ...HPI_DATE_PATTERNS].forEach((pattern) => {
+      pattern.lastIndex = 0;
+      let match;
+      while ((match = pattern.exec(text)) !== null) {
+        matches.push({
+          start: match.index,
+          end: match.index + match[0].length
+        });
+      }
+    });
+
+    const merged = [];
+    matches
+      .sort((a, b) => a.start - b.start || b.end - a.end)
+      .forEach((match) => {
+        const last = merged[merged.length - 1];
+        if (last && match.start <= last.end) {
+          last.end = Math.max(last.end, match.end);
+        } else {
+          merged.push({ ...match });
+        }
+      });
+    return merged;
+  }
+
+  function formatHpiForPrint(text) {
+    if (!text) return '—';
+    const matches = collectHpiFormatMatches(text);
+    if (!matches.length) return escapeHtml(text);
+
+    let html = '';
+    let cursor = 0;
+    matches.forEach((match) => {
+      html += escapeHtml(text.slice(cursor, match.start));
+      html += `<span class="hpi-auto-format">${escapeHtml(text.slice(match.start, match.end))}</span>`;
+      cursor = match.end;
+    });
+    html += escapeHtml(text.slice(cursor));
+    return html;
+  }
+
+  function setFormattedHpi(text) {
+    const nodes = document.querySelectorAll('[data-field="hpi"]');
+    nodes.forEach((n) => { n.innerHTML = formatHpiForPrint(text); });
+  }
+
   function toggleSection(sectionName, hasContent) {
     const sec = document.querySelector(`[data-section="${sectionName}"]`);
     if (sec) sec.style.display = hasContent ? '' : 'none';
@@ -70,13 +167,14 @@
     setText('vitalsLine', vitalsParts.join('  •  '));
 
     const fields = [
-      'complaints', 'hpi', 'pastHistory',
+      'complaints', 'pastHistory',
       'personalHistory', 'familyHistory',
       'generalExam', 'systemicExam',
       'diagnosis', 'plan', 'prescription',
       'otherNotes'
     ];
     fields.forEach((f) => setText(f, val(f)));
+    setFormattedHpi(val('hpi'));
 
     // Consultant lookup
     const consultants = {
