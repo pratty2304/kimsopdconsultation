@@ -16,6 +16,26 @@
       </div>
     </header>
 
+    <!-- Restore-from-autosave banner -->
+    <div id="restoreBanner" class="restore-banner" hidden>
+      <span class="rb-icon">↻</span>
+      <span class="rb-text">An unsaved draft from your last session was found.</span>
+      <button type="button" id="restoreBtn" class="btn-primary btn-small">Restore</button>
+      <button type="button" id="discardBtn" class="btn-ghost btn-small">Discard</button>
+    </div>
+
+    <!-- Recent patients selector -->
+    <div id="recentPatientsCard" class="recent-card" hidden>
+      <div class="recent-row">
+        <label class="recent-label">Recent patients
+          <select id="recentPatientsSelect">
+            <option value="">— Load a saved patient —</option>
+          </select>
+        </label>
+        <button type="button" id="deletePatientBtn" class="btn-ghost btn-small" hidden>Delete</button>
+      </div>
+    </div>
+
     <form id="opdForm" autocomplete="off">
 
       <section class="card">
@@ -56,6 +76,20 @@
 
       <section class="card">
         <h2>Past History / Comorbidities</h2>
+        <div class="chip-row" id="comorbidityChips">
+          <button type="button" class="chip" data-text="HTN">HTN</button>
+          <button type="button" class="chip" data-text="T2DM">T2DM</button>
+          <button type="button" class="chip" data-text="T1DM">T1DM</button>
+          <button type="button" class="chip" data-text="CAD">CAD</button>
+          <button type="button" class="chip" data-text="CKD">CKD</button>
+          <button type="button" class="chip" data-text="CVA">CVA</button>
+          <button type="button" class="chip" data-text="COPD">COPD</button>
+          <button type="button" class="chip" data-text="Asthma">Asthma</button>
+          <button type="button" class="chip" data-text="Hypothyroidism">Hypothyroidism</button>
+          <button type="button" class="chip" data-text="Dyslipidemia">Dyslipidemia</button>
+          <button type="button" class="chip" data-text="Old PT TB">Old PT TB</button>
+          <button type="button" class="chip" data-text="No comorbidities">No comorbidities</button>
+        </div>
         <textarea id="pastHistory" rows="3" placeholder="Diabetes, hypertension, prior surgeries, prior cancer treatment, etc."></textarea>
       </section>
 
@@ -190,9 +224,11 @@
 
       <div class="actions">
         <button type="button" id="previewBtn" class="btn-primary">Preview &amp; Edit</button>
+        <button type="button" id="savePatientBtn" class="btn-secondary">Save Patient</button>
         <button type="button" id="printBtn" class="btn-ghost">Print without Preview</button>
         <button type="button" id="clearBtn" class="btn-ghost">Clear Form</button>
       </div>
+      <div id="toast" class="toast" hidden></div>
     </form>
   </div>
 
