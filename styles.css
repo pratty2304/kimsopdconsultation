@@ -871,6 +871,7 @@ body.preview-mode .print-chemo-table th {
 }
 body.preview-mode .chemo-summary-line { font-size: 9.5pt; margin: 4pt 0 6pt 0; }
 body.preview-mode .print-chemo-notes  { font-size: 9.5pt; margin-top: 6pt; }
+body.preview-mode .chemo-counselling-text { font-size: 8.7pt; line-height: 1.35; }
 body.preview-mode .print-signature {
   margin-top: 28pt;
   text-align: right;
@@ -1157,6 +1158,11 @@ body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
     margin-top: 6pt;
     font-size: 9.5pt;
     color: #333;
+  }
+
+  .chemo-counselling-text {
+    font-size: 8.7pt;
+    line-height: 1.35;
   }
 
   .print-chemo-disclaimer {

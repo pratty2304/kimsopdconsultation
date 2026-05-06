@@ -228,6 +228,227 @@
     return reg.drugs.some((d) => d.unit === 'AUC');
   }
 
+  const UNIVERSAL_CHEMO_WARNING =
+    'Warning signs: Fever >=38 C; vomiting >3 times in 24 hours or unable to keep fluids/medicines down; diarrhea >=4 stools/day above usual, diarrhea at night, blood in stool, or diarrhea with dizziness/weakness; breathlessness, bleeding, severe weakness, reduced urine output, new confusion, or allergic symptoms - report immediately / visit ER.';
+
+  const IMMUNOTHERAPY_DRUGS = [
+    'pembrolizumab', 'nivolumab', 'atezolizumab', 'durvalumab', 'cemiplimab',
+    'dostarlimab', 'tislelizumab', 'avelumab', 'ipilimumab', 'tremelimumab'
+  ];
+
+  const HORMONAL_THERAPY_DRUGS = [
+    'letrozole', 'anastrozole', 'exemestane', 'tamoxifen', 'fulvestrant'
+  ];
+
+  const TARGETED_THERAPY_DRUGS = [
+    'palbociclib', 'ribociclib', 'abemaciclib',
+    'trastuzumab', 'pertuzumab', 'trastuzumab deruxtecan', 'trastuzumab emtansine',
+    'bevacizumab', 'ramucirumab', 'cetuximab', 'panitumumab', 'rituximab',
+    'brentuximab', 'bortezomib', 'olaparib', 'osimertinib', 'gefitinib',
+    'erlotinib', 'afatinib'
+  ];
+
+  const SIDE_EFFECT_CATEGORY_ORDER = [
+    'Chemotherapy',
+    'Immunotherapy',
+    'Targeted / biologic therapy',
+    'Hormonal therapy'
+  ];
+
+  const SIDE_EFFECT_RULES = [
+    {
+      drugs: ['paclitaxel', 'docetaxel', 'nab-paclitaxel'],
+      effects: ['low counts/infection risk', 'nausea', 'hair loss', 'peripheral neuropathy', 'body aches', 'nail changes', 'allergic/infusion reaction']
+    },
+    {
+      drugs: ['carboplatin'],
+      effects: ['low counts/infection risk', 'nausea/vomiting', 'fatigue', 'allergic reaction risk', 'renal/electrolyte issues']
+    },
+    {
+      drugs: ['cisplatin'],
+      effects: ['nausea/vomiting', 'low counts/infection risk', 'renal/electrolyte issues', 'hearing changes', 'peripheral neuropathy']
+    },
+    {
+      drugs: ['oxaliplatin'],
+      effects: ['low counts/infection risk', 'nausea/vomiting', 'cold sensitivity', 'peripheral neuropathy', 'allergic reaction risk']
+    },
+    {
+      drugs: ['doxorubicin', 'epirubicin'],
+      effects: ['low counts/infection risk', 'nausea/vomiting', 'hair loss', 'mouth ulcers', 'cardiac function risk']
+    },
+    {
+      drugs: ['cyclophosphamide', 'ifosfamide'],
+      effects: ['low counts/infection risk', 'nausea/vomiting', 'hair loss', 'bladder irritation/bleeding risk']
+    },
+    {
+      drugs: ['5-fluorouracil', 'fluorouracil', 'capecitabine'],
+      effects: ['diarrhea', 'mouth ulcers', 'hand-foot syndrome', 'low counts/infection risk', 'skin darkening']
+    },
+    {
+      drugs: ['irinotecan'],
+      effects: ['early or delayed diarrhea', 'abdominal cramps', 'low counts/infection risk', 'nausea/vomiting', 'hair loss']
+    },
+    {
+      drugs: ['gemcitabine'],
+      effects: ['low counts/infection risk', 'fever/flu-like symptoms', 'fatigue', 'nausea', 'liver enzyme changes']
+    },
+    {
+      drugs: ['pemetrexed'],
+      effects: ['low counts/infection risk', 'fatigue', 'rash', 'mouth ulcers', 'nausea']
+    },
+    {
+      drugs: ['etoposide'],
+      effects: ['low counts/infection risk', 'nausea/vomiting', 'hair loss', 'mucositis']
+    },
+    {
+      drugs: ['bleomycin'],
+      effects: ['fever', 'skin changes', 'lung toxicity/breathlessness risk']
+    },
+    {
+      drugs: ['vincristine', 'vinblastine'],
+      effects: ['constipation', 'peripheral neuropathy', 'low counts/infection risk']
+    },
+    {
+      drugs: ['dacarbazine', 'bendamustine'],
+      effects: ['low counts/infection risk', 'nausea/vomiting', 'fatigue', 'rash']
+    },
+    {
+      drugs: ['pembrolizumab', 'nivolumab', 'atezolizumab', 'durvalumab', 'cemiplimab', 'dostarlimab', 'tislelizumab', 'avelumab', 'ipilimumab', 'tremelimumab'],
+      effects: ['immune-related rash', 'diarrhea/colitis', 'cough or breathlessness/pneumonitis', 'hepatitis/LFT changes', 'thyroid or other hormone changes', 'fatigue']
+    },
+    {
+      drugs: ['palbociclib', 'ribociclib', 'abemaciclib'],
+      effects: ['low counts/infection risk', 'fatigue', 'diarrhea', 'nausea', 'liver enzyme changes']
+    },
+    {
+      drugs: ['ribociclib'],
+      effects: ['QT prolongation risk - ECG/electrolyte monitoring as advised']
+    },
+    {
+      drugs: ['abemaciclib'],
+      effects: ['diarrhea can be prominent - start antidiarrheal/supportive care early if advised']
+    },
+    {
+      drugs: ['letrozole', 'anastrozole', 'exemestane'],
+      effects: ['hot flashes', 'joint pains/stiffness', 'bone loss', 'vaginal dryness']
+    },
+    {
+      drugs: ['tamoxifen'],
+      effects: ['hot flashes', 'vaginal discharge/bleeding', 'thrombosis risk', 'endometrial symptoms']
+    },
+    {
+      drugs: ['fulvestrant'],
+      effects: ['injection site pain', 'hot flashes', 'fatigue', 'joint pains']
+    },
+    {
+      drugs: ['trastuzumab', 'pertuzumab', 'trastuzumab deruxtecan', 'trastuzumab emtansine'],
+      effects: ['infusion reaction', 'cardiac function risk', 'diarrhea', 'fatigue']
+    },
+    {
+      drugs: ['trastuzumab deruxtecan'],
+      effects: ['interstitial lung disease/pneumonitis risk - report new cough or breathlessness urgently']
+    },
+    {
+      drugs: ['trastuzumab emtansine'],
+      effects: ['low platelets/bleeding risk', 'liver enzyme changes', 'peripheral neuropathy']
+    },
+    {
+      drugs: ['bevacizumab', 'ramucirumab'],
+      effects: ['hypertension', 'bleeding', 'thrombosis', 'wound-healing delay', 'proteinuria']
+    },
+    {
+      drugs: ['cetuximab', 'panitumumab'],
+      effects: ['acneiform rash', 'diarrhea', 'low magnesium', 'infusion reaction']
+    },
+    {
+      drugs: ['rituximab'],
+      effects: ['infusion reaction', 'infection risk', 'viral reactivation risk']
+    },
+    {
+      drugs: ['brentuximab', 'bortezomib'],
+      effects: ['peripheral neuropathy', 'low counts/infection risk', 'fatigue']
+    },
+    {
+      drugs: ['olaparib'],
+      effects: ['nausea', 'fatigue', 'low counts/anemia', 'taste changes']
+    },
+    {
+      drugs: ['osimertinib', 'gefitinib', 'erlotinib', 'afatinib'],
+      effects: ['skin rash', 'diarrhea', 'nail changes', 'mouth ulcers', 'rare lung inflammation/breathlessness risk']
+    }
+  ];
+
+  function regimenDrugNameText(reg) {
+    return (reg?.drugs || []).map((d) => d.name.toLowerCase()).join(' | ');
+  }
+
+  function uniqueList(items) {
+    const seen = new Set();
+    return items.filter((item) => {
+      const key = item.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function ruleSideEffectCategory(rule) {
+    const ruleText = rule.drugs.join(' | ').toLowerCase();
+    if (IMMUNOTHERAPY_DRUGS.some((drug) => ruleText.includes(drug))) return 'Immunotherapy';
+    if (HORMONAL_THERAPY_DRUGS.some((drug) => ruleText.includes(drug))) return 'Hormonal therapy';
+    if (TARGETED_THERAPY_DRUGS.some((drug) => ruleText.includes(drug))) return 'Targeted / biologic therapy';
+    return 'Chemotherapy';
+  }
+
+  function getRegimenSideEffectGroups(reg) {
+    const drugText = regimenDrugNameText(reg);
+    const groups = {};
+    SIDE_EFFECT_RULES.forEach((rule) => {
+      if (rule.drugs.some((drug) => drugText.includes(drug))) {
+        const category = ruleSideEffectCategory(rule);
+        if (!groups[category]) groups[category] = [];
+        groups[category].push(...rule.effects);
+      }
+    });
+
+    if (!Object.keys(groups).length && reg?.drugs?.length) {
+      groups.Chemotherapy = ['fatigue', 'nausea', 'low counts/infection risk'];
+    }
+
+    return SIDE_EFFECT_CATEGORY_ORDER
+      .filter((category) => groups[category]?.length)
+      .map((category) => ({
+        category,
+        effects: uniqueList(groups[category]).slice(0, 9)
+      }));
+  }
+
+  function buildChemoCounsellingNote(reg) {
+    if (!reg) return '';
+    const effectGroups = getRegimenSideEffectGroups(reg);
+    const lines = [UNIVERSAL_CHEMO_WARNING];
+    if (effectGroups.length) {
+      lines.push('');
+      lines.push('Expected side effects:');
+      effectGroups.forEach((group) => {
+        lines.push(`${group.category}: ${group.effects.join(', ')}.`);
+      });
+    }
+    return lines.join('\n');
+  }
+
+  function autofillChemoCounselling(reg) {
+    const notesEl = document.getElementById('chemoCycleNotes');
+    if (!notesEl || !reg) return;
+    const nextNote = buildChemoCounsellingNote(reg);
+    const current = notesEl.value.trim();
+    const priorAuto = notesEl.dataset.autoCounselling || '';
+    if (!current || current === priorAuto) {
+      notesEl.value = nextNote;
+      notesEl.dataset.autoCounselling = nextNote;
+    }
+  }
+
   function normalizeRegimenSearch(value) {
     return (value || '')
       .toString()
@@ -448,6 +669,7 @@
     } else {
       carbSection.hidden = true;
     }
+    if (reg) autofillChemoCounselling(reg);
     renderChemoTable();
   }
 
@@ -597,6 +819,15 @@
       regSearch.addEventListener('change', onRegimenSearchInput);
     }
 
+    const cycleNotes = document.getElementById('chemoCycleNotes');
+    if (cycleNotes) {
+      cycleNotes.addEventListener('input', () => {
+        if (cycleNotes.value !== (cycleNotes.dataset.autoCounselling || '')) {
+          cycleNotes.dataset.autoCounselling = '';
+        }
+      });
+    }
+
     // Re-render chemo table when patient details (age, sex) or creatinine change
     ['age', 'sex', 'chemoCreat'].forEach((id) => {
       const el = document.getElementById(id);
@@ -646,6 +877,8 @@
 
   function setFormState(state) {
     if (!state) return;
+    const cycleNotes = document.getElementById('chemoCycleNotes');
+    if (cycleNotes) cycleNotes.dataset.autoCounselling = '';
     FIELDS.forEach((id) => {
       const el = document.getElementById(id);
       if (!el || state[id] === undefined) return;
@@ -685,6 +918,8 @@
     if (regSel) { regSel.innerHTML = '<option value="">— Select cancer first —</option>'; regSel.disabled = true; }
     const regSearch = document.getElementById('chemoRegimenSearch');
     if (regSearch) { regSearch.value = ''; regSearch.disabled = true; regSearch.placeholder = 'Select cancer first'; }
+    const notesEl = document.getElementById('chemoCycleNotes');
+    if (notesEl) notesEl.dataset.autoCounselling = '';
     setRegimenSearchStatus('', '');
     document.getElementById('bsa').value = '';
   }
@@ -850,7 +1085,7 @@
       return;
     }
     const patients = loadPatients();
-    // De-dupe: if same name + MRN already exists, update it; else add new
+    // De-dupe: if same name + UMR No. already exists, update it; else add new
     const existing = patients.find((p) =>
       p.state.name === state.name && (p.state.mrn || '') === (state.mrn || '')
     );
@@ -1033,6 +1268,26 @@
   }
   attachMicButtons();
 
+  function escapeHtml(value) {
+    return (value || '').toString()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function formatChemoNotesForPrint(notes) {
+    if (!notes) return '';
+    return notes.split('\n').map((line) => {
+      const safe = escapeHtml(line);
+      if (line.trim().toLowerCase().startsWith('warning signs:')) {
+        return `<em>${safe}</em>`;
+      }
+      return safe;
+    }).join('<br>');
+  }
+
   function buildPrintChemoSection(reg) {
     const wt    = parseFloat(document.getElementById('weight').value) || null;
     const ht    = parseFloat(document.getElementById('height').value) || null;
@@ -1066,7 +1321,7 @@
     });
 
     const notesEl = document.getElementById('printChemoNotes');
-    notesEl.innerHTML = notes ? `<strong>Notes:</strong> ${notes.replace(/\n/g, '<br>')}` : '';
+    notesEl.innerHTML = notes ? `<strong>Notes:</strong><br><span class="chemo-counselling-text">${formatChemoNotesForPrint(notes)}</span>` : '';
   }
 
   // ============================================================
