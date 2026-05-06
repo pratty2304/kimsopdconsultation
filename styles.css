@@ -794,6 +794,15 @@ body.preview-mode .team-heading {
   padding-bottom: 4pt;
   margin-bottom: 10pt;
 }
+body.preview-mode .team-location {
+  font-size: 8.5pt;
+  color: #444;
+  margin-top: 2pt;
+  line-height: 1.25;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
 body.preview-mode .team-doctor { margin-bottom: 12pt; }
 body.preview-mode .td-name { font-weight: 700; font-size: 10pt; }
 body.preview-mode .td-qual { font-size: 9pt; font-style: italic; color: #333; }
@@ -966,7 +975,7 @@ body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
 @media print {
   @page {
     size: A4;
-    margin: 5mm 8mm 14mm 8mm;
+    margin: 5mm 8mm 32mm 8mm;
   }
 
   /* Force highlighted text and any inline styled colours to print as-is */
@@ -1020,6 +1029,16 @@ body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
     border-bottom: 1pt solid #2c93c9;
     padding-bottom: 4pt;
     margin-bottom: 10pt;
+  }
+
+  .team-location {
+    font-size: 8.5pt;
+    color: #444;
+    margin-top: 2pt;
+    line-height: 1.25;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 500;
   }
 
   .team-doctor {
@@ -1210,6 +1229,7 @@ body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
   body.print-bw .print-section,
   body.print-bw .print-section h3,
   body.print-bw .team-heading,
+  body.print-bw .team-location,
   body.print-bw .team-doctor,
   body.print-bw .td-name,
   body.print-bw .td-qual,
