@@ -1151,13 +1151,29 @@
     previewBackBtn.addEventListener('click', exitPreviewMode);
   }
 
+  function printDocument(mode) {
+    document.body.classList.toggle('print-bw', mode === 'bw');
+    setPdfTitle();
+    window.print();
+    setTimeout(() => {
+      document.body.classList.remove('print-bw');
+      restoreTitle();
+    }, 1500);
+  }
+
   // Print from preview — uses current edited state (DOM)
   const previewPrintBtn = $('#previewPrintBtn');
   if (previewPrintBtn) {
     previewPrintBtn.addEventListener('click', () => {
-      setPdfTitle();
-      window.print();
-      setTimeout(restoreTitle, 1500);
+      printDocument('bw');
+    });
+  }
+
+  // Save as PDF from preview — preserve existing colour styling
+  const previewPdfBtn = $('#previewPdfBtn');
+  if (previewPdfBtn) {
+    previewPdfBtn.addEventListener('click', () => {
+      printDocument('color');
     });
   }
 
@@ -1166,9 +1182,16 @@
   if (printBtn) {
     printBtn.addEventListener('click', () => {
       buildPrintSummary();
-      setPdfTitle();
-      window.print();
-      setTimeout(restoreTitle, 1500);
+      printDocument('bw');
+    });
+  }
+
+  // Save as PDF from main form — direct print dialog, preserving colour styling
+  const pdfBtn = $('#pdfBtn');
+  if (pdfBtn) {
+    pdfBtn.addEventListener('click', () => {
+      buildPrintSummary();
+      printDocument('color');
     });
   }
 

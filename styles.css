@@ -1184,4 +1184,65 @@ body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
     font-size: 9pt;
     color: #444;
   }
+
+  body.print-bw #printArea,
+  body.print-bw .print-sidebar,
+  body.print-bw .print-main,
+  body.print-bw .print-section,
+  body.print-bw .print-section h3,
+  body.print-bw .team-heading,
+  body.print-bw .team-doctor,
+  body.print-bw .td-name,
+  body.print-bw .td-qual,
+  body.print-bw .td-role,
+  body.print-bw .td-dept,
+  body.print-bw .td-kmc,
+  body.print-bw .chemo-summary-line,
+  body.print-bw .print-chemo-notes,
+  body.print-bw .print-chemo-disclaimer,
+  body.print-bw .print-signature,
+  body.print-bw .sig-sub {
+    color: #000 !important;
+  }
+
+  body.print-bw .print-grid {
+    border-top: 1.4pt solid #000 !important;
+    border-bottom: 1.4pt solid #000 !important;
+  }
+
+  body.print-bw .print-sidebar {
+    border-right: 1.2pt solid #000 !important;
+    border-bottom-color: #000 !important;
+  }
+
+  body.print-bw .team-heading {
+    border-bottom: 1.2pt solid #000 !important;
+  }
+
+  body.print-bw .print-section h3 {
+    border-bottom: 1pt solid #000 !important;
+  }
+
+  body.print-bw .print-section[data-section="prescription"] h3 {
+    border-bottom: none !important;
+  }
+
+  body.print-bw .print-section[data-section="prescription"] p {
+    border-left: 1.2pt solid #000 !important;
+  }
+
+  body.print-bw .print-meta,
+  body.print-bw .print-chemo-table th {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  body.print-bw .print-chemo-table th,
+  body.print-bw .print-chemo-table td {
+    border: 0.8pt solid #000 !important;
+  }
+
+  body.print-bw .sig-line {
+    border-top: 1pt solid #000 !important;
+  }
 }
