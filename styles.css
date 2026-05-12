@@ -848,12 +848,6 @@ body.preview-mode .print-section p {
   line-height: 1.4;
   font-size: 10.5pt;
 }
-body.preview-mode .hpi-auto-format {
-  font-weight: 700;
-  text-decoration: underline;
-  text-decoration-thickness: 0.8pt;
-  text-underline-offset: 1.2pt;
-}
 body.preview-mode .print-section[data-section="prescription"] h3 {
   font-size: 14pt;
   font-style: italic;
@@ -1132,13 +1126,6 @@ body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
     white-space: pre-wrap;
     line-height: 1.4;
     font-size: 10.5pt;
-  }
-
-  .hpi-auto-format {
-    font-weight: 700;
-    text-decoration: underline;
-    text-decoration-thickness: 0.8pt;
-    text-underline-offset: 1.2pt;
   }
 
   .print-section[data-section="prescription"] h3 {
