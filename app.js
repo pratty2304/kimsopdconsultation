@@ -1378,7 +1378,6 @@
     clone.querySelectorAll('[contenteditable]').forEach((el) => {
       el.removeAttribute('contenteditable');
       el.classList.remove('editable');
-      el.removeAttribute('data-preview-input-wired');
     });
     return clone.innerHTML;
   }
@@ -1537,21 +1536,4 @@
     });
   }
 
-  // Clear form
-  const clearBtn = $('#clearBtn');
-  if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-      const ok = confirm('Clear all fields?');
-      if (!ok) return;
-      document.getElementById('opdForm').reset();
-      // Re-set today's date
-      if (todayInput) {
-        const now = new Date();
-        const yyyy = now.getFullYear();
-        const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const dd = String(now.getDate()).padStart(2, '0');
-        todayInput.value = `${yyyy}-${mm}-${dd}`;
-      }
-    });
-  }
 })();
