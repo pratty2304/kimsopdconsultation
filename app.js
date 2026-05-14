@@ -866,6 +866,16 @@
     'chemoCancer', 'chemoRegimen', 'chemoCreat', 'chemoCycleNotes'
   ];
 
+  const PREVIEW_SYNC_FIELDS = [
+    'name', 'mrn',
+    'complaints', 'hpi', 'pastHistory',
+    'personalHistory', 'familyHistory',
+    'generalExam', 'systemicExam',
+    'diagnosis', 'plan', 'otherNotes', 'prescription'
+  ];
+
+  let currentPreviewHtml = '';
+
   function getFormState() {
     const state = {};
     FIELDS.forEach((id) => {
@@ -873,11 +883,13 @@
       if (el) state[id] = el.value;
     });
     state.planChemoToggle = document.getElementById('planChemoToggle')?.checked || false;
+    if (currentPreviewHtml) state.previewHtml = currentPreviewHtml;
     return state;
   }
 
   function setFormState(state) {
     if (!state) return;
+    currentPreviewHtml = state.previewHtml || '';
     const cycleNotes = document.getElementById('chemoCycleNotes');
     if (cycleNotes) cycleNotes.dataset.autoCounselling = '';
     FIELDS.forEach((id) => {
@@ -906,6 +918,7 @@
   }
 
   function clearFormState() {
+    currentPreviewHtml = '';
     document.getElementById('opdForm').reset();
     // Reset today's date
     if (todayInput) {
@@ -980,7 +993,11 @@
   // form values during initial page load (which would re-create a draft right
   // after the user clicked Discard).
   let userHasInteracted = false;
-  function markInteracted() { userHasInteracted = true; scheduleAutosave(); }
+  function markInteracted() {
+    currentPreviewHtml = '';
+    userHasInteracted = true;
+    scheduleAutosave();
+  }
   document.querySelectorAll('#opdForm input, #opdForm select, #opdForm textarea').forEach((el) => {
     el.addEventListener('input', markInteracted);
     el.addEventListener('change', markInteracted);
@@ -1080,6 +1097,7 @@
   }
 
   document.getElementById('savePatientBtn')?.addEventListener('click', () => {
+    capturePreviewEdits();
     const state = getFormState();
     if (!state.name) {
       showToast('Enter a patient name first');
@@ -1102,6 +1120,7 @@
     savePatientsList(patients);
     rebuildRecentPatientsDropdown();
     discardDraft();
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
     updateResumeButton();
     showToast(existing ? 'Patient updated' : 'Patient saved');
   });
@@ -1329,11 +1348,41 @@
   // Preview & Edit mode — show printable layout on screen, allow inline edits
   // ============================================================
 
-  function enterPreviewMode() {
-    buildPrintSummary();
-    setPdfTitle();
+  function editableText(el) {
+    const text = el.innerText !== undefined ? el.innerText : el.textContent;
+    return (text || '').replace(/\u00a0/g, ' ').trim();
+  }
 
-    // Make editable elements contenteditable inside the print area
+  function cleanPreviewHtml() {
+    const printArea = document.getElementById('printArea');
+    if (!printArea) return '';
+    const clone = printArea.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach((el) => {
+      el.removeAttribute('contenteditable');
+      el.classList.remove('editable');
+      el.removeAttribute('data-preview-input-wired');
+    });
+    return clone.innerHTML;
+  }
+
+  function syncPreviewTextToForm() {
+    PREVIEW_SYNC_FIELDS.forEach((field) => {
+      const editable = document.querySelector(`#printArea [data-field="${field}"]`);
+      const input = document.getElementById(field);
+      if (!editable || !input) return;
+      input.value = editableText(editable);
+    });
+  }
+
+  function capturePreviewEdits() {
+    if (!document.body.classList.contains('preview-mode')) return;
+    syncPreviewTextToForm();
+    currentPreviewHtml = cleanPreviewHtml();
+    userHasInteracted = true;
+    scheduleAutosave();
+  }
+
+  function makePrintAreaEditable() {
     const printArea = document.getElementById('printArea');
     const editableSelectors = [
       '[data-field]',                      // all populated patient data spans
@@ -1349,8 +1398,22 @@
       printArea.querySelectorAll(sel).forEach((el) => {
         el.setAttribute('contenteditable', 'true');
         el.classList.add('editable');
+        el.addEventListener('input', capturePreviewEdits);
       });
     });
+  }
+
+  function enterPreviewMode() {
+    const printArea = document.getElementById('printArea');
+    if (currentPreviewHtml) {
+      printArea.innerHTML = currentPreviewHtml;
+    } else {
+      buildPrintSummary();
+    }
+    setPdfTitle();
+
+    // Make editable elements contenteditable inside the print area
+    makePrintAreaEditable();
 
     // Switch to preview mode
     document.body.classList.add('preview-mode');
@@ -1361,6 +1424,7 @@
   }
 
   function exitPreviewMode() {
+    capturePreviewEdits();
     document.body.classList.remove('preview-mode');
     document.getElementById('previewToolbar').hidden = true;
 
@@ -1398,6 +1462,7 @@
       } else {
         document.execCommand(cmd, false, null);
       }
+      capturePreviewEdits();
     });
   });
 
