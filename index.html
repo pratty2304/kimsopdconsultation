@@ -229,11 +229,14 @@
       <div class="actions">
         <button type="button" id="previewBtn" class="btn-primary">Preview &amp; Edit</button>
         <button type="button" id="savePatientBtn" class="btn-secondary">Save Patient</button>
-        <button type="button" id="printBtn" class="btn-ghost">Print without Preview</button>
+        <button type="button" id="printBtn" class="btn-ghost">Print</button>
         <button type="button" id="pdfBtn" class="btn-ghost">Save as PDF</button>
         <button type="button" id="resumeBtn" class="btn-ghost" disabled>Resume Last Draft</button>
         <button type="button" id="clearBtn" class="btn-ghost">Clear Form</button>
       </div>
+      <p id="previewEditsNotice" class="preview-edits-notice" hidden>
+        Preview edits are active. Print, Save as PDF, and Save Patient will use the edited formatted version.
+      </p>
       <p class="autosave-hint">Your work auto-saves on this device. If you accidentally close this page, click "Resume Last Draft" when you return.</p>
       <div id="toast" class="toast" hidden></div>
     </form>
@@ -250,7 +253,7 @@
         <button type="button" class="fmt-btn" data-cmd="clear" title="Remove formatting from selection">⌫</button>
       </div>
       <span class="preview-hint">Select text and use formatting buttons or Ctrl/Cmd+B/I/U.</span>
-      <button type="button" id="previewBackBtn" class="btn-ghost">← Back to Form</button>
+      <button type="button" id="previewBackBtn" class="btn-ghost">← Save Edits &amp; Back</button>
       <button type="button" id="previewPrintBtn" class="btn-ghost">Print</button>
       <button type="button" id="previewPdfBtn" class="btn-primary">Save as PDF</button>
     </div>

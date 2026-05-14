@@ -876,6 +876,21 @@
 
   let currentPreviewHtml = '';
 
+  function updatePreviewEditsNotice() {
+    const notice = document.getElementById('previewEditsNotice');
+    if (notice) notice.hidden = !currentPreviewHtml;
+  }
+
+  function buildCurrentPrintableSummary() {
+    const printArea = document.getElementById('printArea');
+    if (currentPreviewHtml && printArea) {
+      printArea.innerHTML = currentPreviewHtml;
+      setPdfTitle();
+      return;
+    }
+    buildPrintSummary();
+  }
+
   function getFormState() {
     const state = {};
     FIELDS.forEach((id) => {
@@ -890,6 +905,7 @@
   function setFormState(state) {
     if (!state) return;
     currentPreviewHtml = state.previewHtml || '';
+    updatePreviewEditsNotice();
     const cycleNotes = document.getElementById('chemoCycleNotes');
     if (cycleNotes) cycleNotes.dataset.autoCounselling = '';
     FIELDS.forEach((id) => {
@@ -919,6 +935,7 @@
 
   function clearFormState() {
     currentPreviewHtml = '';
+    updatePreviewEditsNotice();
     document.getElementById('opdForm').reset();
     // Reset today's date
     if (todayInput) {
@@ -995,6 +1012,7 @@
   let userHasInteracted = false;
   function markInteracted() {
     currentPreviewHtml = '';
+    updatePreviewEditsNotice();
     userHasInteracted = true;
     scheduleAutosave();
   }
@@ -1378,6 +1396,7 @@
     if (!document.body.classList.contains('preview-mode')) return;
     syncPreviewTextToForm();
     currentPreviewHtml = cleanPreviewHtml();
+    updatePreviewEditsNotice();
     userHasInteracted = true;
     scheduleAutosave();
   }
@@ -1434,6 +1453,8 @@
       el.removeAttribute('contenteditable');
       el.classList.remove('editable');
     });
+    updatePreviewEditsNotice();
+    showToast('Preview edits saved. Main Print/PDF will use them.');
     restoreTitle();
   }
 
@@ -1498,11 +1519,11 @@
     });
   }
 
-  // "Print without preview" button — direct print, no edit step
+  // Main form print button — uses saved preview edits when present
   const printBtn = $('#printBtn');
   if (printBtn) {
     printBtn.addEventListener('click', () => {
-      buildPrintSummary();
+      buildCurrentPrintableSummary();
       printDocument('bw');
     });
   }
@@ -1511,7 +1532,7 @@
   const pdfBtn = $('#pdfBtn');
   if (pdfBtn) {
     pdfBtn.addEventListener('click', () => {
-      buildPrintSummary();
+      buildCurrentPrintableSummary();
       printDocument('color');
     });
   }
