@@ -1106,7 +1106,7 @@
     card.hidden = false;
     // Sort by most recent first
     patients.sort((a, b) => b.savedAt - a.savedAt);
-    patients.slice(0, 20).forEach((p) => {
+    patients.slice(0, MAX_PATIENTS).forEach((p) => {
       const opt = document.createElement('option');
       opt.value = p.id;
       opt.textContent = patientLabel(p);
