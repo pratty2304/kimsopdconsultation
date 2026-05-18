@@ -248,7 +248,7 @@ window.CANCER_TYPES = [
 | metastatic_crc | 5 |
 | gastric | 6 |
 | esophageal | 4 |
-| cervical | 4 |
+| cervical | 6 (incl. KEYNOTE-826 PD-L1 CPS >=1 pembro-chemo-bev, KEYNOTE-A18 pembro-CRT) |
 | endometrial | 4 |
 | head_neck | 5 |
 | lung | 13 (incl. KEYNOTE-189, KEYNOTE-407, Nivo+Carbo+Pem, Tisle+Carbo+Pem RATIONALE-304, PACIFIC Durva consolidation, AEGEAN, Osimertinib FLAURA, FLAURA2, Gefitinib IPASS, NEJ009, IMpower133, LS-SCLC) |

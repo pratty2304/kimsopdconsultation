@@ -558,6 +558,27 @@ window.REGIMENS = {
       ]
     },
     {
+      key: 'KEYNOTE-826-CarboPac-Pembro-Bev-Cervical',
+      name: 'Pembrolizumab + Carboplatin + Paclitaxel + Bevacizumab (KEYNOTE-826, PD-L1 CPS >=1 only)',
+      aliases: ['KEYNOTE-826', 'pembro carbo pac bev cervical', 'pembrolizumab carboplatin paclitaxel bevacizumab cervical', 'PDL1 cervical pembro'],
+      drugs: [
+        { name: 'Pembrolizumab', dose: 200, unit: 'mg',    schedule: 'D1, q21d up to 35 cycles / 24 months (PD-L1 CPS >=1 tumors only)' },
+        { name: 'Carboplatin',   dose: 5,   unit: 'AUC',   schedule: 'D1, q21d' },
+        { name: 'Paclitaxel',    dose: 175, unit: 'mg/m²', schedule: 'D1, q21d' },
+        { name: 'Bevacizumab',   dose: 15,  unit: 'mg/kg', schedule: 'D1, q21d if no contraindication' }
+      ]
+    },
+    {
+      key: 'KEYNOTE-A18-Pembro-Cisplatin-RT-Cervical',
+      name: 'Pembrolizumab + Cisplatin weekly + RT (KEYNOTE-A18)',
+      aliases: ['KEYNOTE-A18', 'pembro cisplatin RT cervical', 'concurrent pembro cervical', 'pembrolizumab chemoradiotherapy cervical'],
+      drugs: [
+        { name: 'Pembrolizumab',               dose: 200, unit: 'mg',    schedule: 'D1, q21d × 5 cycles with concurrent CRT' },
+        { name: 'Pembrolizumab (maintenance)', dose: 400, unit: 'mg',    schedule: 'D1, q42d × 15 cycles after CRT' },
+        { name: 'Cisplatin',                   dose: 40,  unit: 'mg/m²', schedule: 'D1 weekly × 5 cycles (optional 6th) with EBRT followed by brachytherapy' }
+      ]
+    },
+    {
       key: 'TIP-Cervical',
       name: 'TIP (Paclitaxel + Ifosfamide + Cisplatin)',
       drugs: [
