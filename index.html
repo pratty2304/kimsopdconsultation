@@ -179,6 +179,35 @@
             <div id="carbCalc" class="carb-calc"></div>
           </div>
 
+          <div class="custom-drug-panel">
+            <label class="toggle-row">
+              <input type="checkbox" id="customDrugToggle" />
+              <span>Add custom drug</span>
+            </label>
+            <div id="customDrugFields" class="custom-drug-fields" hidden>
+              <div class="grid grid-4">
+                <label>Drug name
+                  <input type="text" id="customDrugName" placeholder="Drug name" autocomplete="off" />
+                </label>
+                <label>Dose
+                  <input type="number" step="0.01" id="customDrugDose" placeholder="Dose" />
+                </label>
+                <label>Unit
+                  <select id="customDrugUnit">
+                    <option value="mg">mg</option>
+                    <option value="mg/m²">mg/m²</option>
+                    <option value="mg/kg">mg/kg</option>
+                    <option value="AUC">AUC</option>
+                    <option value="flat">flat mg</option>
+                  </select>
+                </label>
+                <label>Schedule
+                  <input type="text" id="customDrugSchedule" placeholder="D1, q21d" autocomplete="off" />
+                </label>
+              </div>
+            </div>
+          </div>
+
           <div id="chemoTablePreview" class="chemo-preview"></div>
 
           <label class="chemo-notes-label">Additional notes for this cycle (optional)

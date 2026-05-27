@@ -650,6 +650,33 @@ window.REGIMENS = {
       ]
     },
     {
+      key: 'CarboPac-Weekly-HN',
+      name: 'Carboplatin + Paclitaxel (weekly)',
+      aliases: ['carbo pac weekly head neck', 'carboplatin paclitaxel weekly head neck', 'weekly PC head neck'],
+      drugs: [
+        { name: 'Carboplatin', dose: 2,  unit: 'AUC',   schedule: 'D1 weekly' },
+        { name: 'Paclitaxel',  dose: 80, unit: 'mg/m²', schedule: 'D1 weekly' }
+      ]
+    },
+    {
+      key: 'CarboPac-3w-HN',
+      name: 'Carboplatin + Paclitaxel (3-weekly)',
+      aliases: ['carbo pac 3 weekly head neck', 'carboplatin paclitaxel 3 weekly head neck', 'PC head neck q3w'],
+      drugs: [
+        { name: 'Carboplatin', dose: 5,   unit: 'AUC',   schedule: 'D1, q21d × 6 cycles' },
+        { name: 'Paclitaxel',  dose: 175, unit: 'mg/m²', schedule: 'D1, q21d × 6 cycles' }
+      ]
+    },
+    {
+      key: 'CisPac-3w-HN',
+      name: 'Cisplatin + Paclitaxel (3-weekly)',
+      aliases: ['cis pac 3 weekly head neck', 'cisplatin paclitaxel 3 weekly head neck', 'PC cis head neck q3w'],
+      drugs: [
+        { name: 'Cisplatin',  dose: 75,  unit: 'mg/m²', schedule: 'D1, q21d × 6 cycles' },
+        { name: 'Paclitaxel', dose: 175, unit: 'mg/m²', schedule: 'D1, q21d × 6 cycles' }
+      ]
+    },
+    {
       key: 'Pembro-Carbo-5FU',
       name: 'Pembrolizumab + Carboplatin + 5-FU (KEYNOTE-048)',
       drugs: [
@@ -906,6 +933,44 @@ window.REGIMENS = {
     }
   ],
 
+  prostate: [
+    {
+      key: 'Abiraterone-Prednisone-Prostate',
+      name: 'Abiraterone acetate + Prednisone',
+      aliases: ['abiraterone', 'abiraterone acetate', 'zytiga'],
+      drugs: [
+        { name: 'Abiraterone acetate', dose: 1000, unit: 'flat', isOral: true, schedule: 'PO once daily on empty stomach, continuous' },
+        { name: 'Prednisone',          dose: 5,    unit: 'flat', isOral: true, schedule: 'PO BD, continuous' }
+      ]
+    },
+    {
+      key: 'Enzalutamide-Prostate',
+      name: 'Enzalutamide',
+      aliases: ['xtandi'],
+      drugs: [
+        { name: 'Enzalutamide', dose: 160, unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' }
+      ]
+    },
+    {
+      key: 'Docetaxel-Prednisone-Prostate',
+      name: 'Docetaxel + Prednisone',
+      aliases: ['docetaxel prostate', 'taxotere prostate'],
+      drugs: [
+        { name: 'Docetaxel',  dose: 75, unit: 'mg/m²', schedule: 'D1, q21d' },
+        { name: 'Prednisone', dose: 5,  unit: 'flat',  isOral: true, schedule: 'PO BD, continuous' }
+      ]
+    },
+    {
+      key: 'Cabazitaxel-Prednisone-Prostate',
+      name: 'Cabazitaxel + Prednisone',
+      aliases: ['cabazitaxel prostate', 'jevtana'],
+      drugs: [
+        { name: 'Cabazitaxel', dose: 20, unit: 'mg/m²', schedule: 'D1, q21d' },
+        { name: 'Prednisone',  dose: 10, unit: 'flat',  isOral: true, schedule: 'PO once daily, continuous' }
+      ]
+    }
+  ],
+
   biliary: [
     {
       key: 'GemCis',
@@ -988,6 +1053,7 @@ window.CANCER_TYPES = [
   { key: 'lymphoma',        label: 'Lymphoma' },
   { key: 'pancreatic',      label: 'Pancreatic Cancer' },
   { key: 'ovarian',         label: 'Ovarian Cancer' },
+  { key: 'prostate',        label: 'Prostate Cancer' },
   { key: 'biliary',         label: 'Biliary Tract Cancer' },
   { key: 'hcc',             label: 'Hepatocellular Cancer (HCC)' }
 ];

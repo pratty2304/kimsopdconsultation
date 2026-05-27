@@ -400,6 +400,18 @@ label > textarea { margin-top: 0; }
   min-height: 18px;
 }
 
+.custom-drug-panel {
+  margin-top: 14px;
+  padding: 12px;
+  background: #fffdfb;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.custom-drug-fields {
+  margin-top: 12px;
+}
+
 .chemo-preview {
   margin-top: 16px;
 }
@@ -598,6 +610,10 @@ button[disabled] {
   }
 
   .carb-section {
+    padding: 12px;
+  }
+
+  .custom-drug-panel {
     padding: 12px;
   }
 

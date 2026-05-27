@@ -114,10 +114,10 @@
 
     // Build chemo plan section for print
     const planChemo = document.getElementById('planChemoToggle');
-    const reg = getSelectedRegimen();
-    const showChemo = !!(planChemo && planChemo.checked && reg);
+    const chemoPlan = getActiveChemoPlan();
+    const showChemo = !!(planChemo && planChemo.checked && chemoPlan);
     toggleSection('chemo', showChemo);
-    if (showChemo) buildPrintChemoSection(reg);
+    if (showChemo) buildPrintChemoSection(chemoPlan);
     toggleSection('otherNotes', !!val('otherNotes'));
   }
 
@@ -229,6 +229,51 @@
     return reg.drugs.some((d) => d.unit === 'AUC');
   }
 
+  function updateCustomDrugVisibility() {
+    const toggle = document.getElementById('customDrugToggle');
+    const fields = document.getElementById('customDrugFields');
+    if (fields) fields.hidden = !(toggle && toggle.checked);
+  }
+
+  function getCustomDrug() {
+    const toggle = document.getElementById('customDrugToggle');
+    if (!toggle || !toggle.checked) return null;
+
+    const name = (document.getElementById('customDrugName')?.value || '').trim();
+    if (!name) return null;
+
+    const rawDose = document.getElementById('customDrugDose')?.value;
+    const parsedDose = rawDose === '' || rawDose == null ? null : parseFloat(rawDose);
+    const unit = document.getElementById('customDrugUnit')?.value || 'mg';
+    const schedule = (document.getElementById('customDrugSchedule')?.value || '').trim();
+
+    return {
+      name,
+      dose: Number.isFinite(parsedDose) ? parsedDose : null,
+      unit,
+      schedule: schedule || '—',
+      isCustom: true
+    };
+  }
+
+  function getActiveChemoPlan() {
+    const reg = getSelectedRegimen();
+    const customDrug = getCustomDrug();
+    if (!reg && !customDrug) return null;
+
+    const drugs = reg ? reg.drugs.slice() : [];
+    if (customDrug) drugs.push(customDrug);
+
+    let name = reg ? reg.name : `Custom drug: ${customDrug.name}`;
+    if (reg && customDrug) name = `${reg.name} + Custom drug`;
+
+    return {
+      key: reg ? reg.key : 'Custom-Drug',
+      name,
+      drugs
+    };
+  }
+
   const UNIVERSAL_CHEMO_WARNING =
     'Warning signs: Fever >=38 C; vomiting >3 times in 24 hours or unable to keep fluids/medicines down; diarrhea >=4 stools/day above usual, diarrhea at night, blood in stool, or diarrhea with dizziness/weakness; breathlessness, bleeding, severe weakness, reduced urine output, new confusion, or allergic symptoms - report immediately / visit ER.';
 
@@ -238,7 +283,8 @@
   ];
 
   const HORMONAL_THERAPY_DRUGS = [
-    'letrozole', 'anastrozole', 'exemestane', 'tamoxifen', 'fulvestrant'
+    'letrozole', 'anastrozole', 'exemestane', 'tamoxifen', 'fulvestrant',
+    'abiraterone', 'enzalutamide'
   ];
 
   const TARGETED_THERAPY_DRUGS = [
@@ -258,7 +304,7 @@
 
   const SIDE_EFFECT_RULES = [
     {
-      drugs: ['paclitaxel', 'docetaxel', 'nab-paclitaxel'],
+      drugs: ['paclitaxel', 'docetaxel', 'nab-paclitaxel', 'cabazitaxel'],
       effects: ['low counts/infection risk', 'nausea', 'hair loss', 'peripheral neuropathy', 'body aches', 'nail changes', 'allergic/infusion reaction']
     },
     {
@@ -340,6 +386,18 @@
     {
       drugs: ['fulvestrant'],
       effects: ['injection site pain', 'hot flashes', 'fatigue', 'joint pains']
+    },
+    {
+      drugs: ['abiraterone'],
+      effects: ['fatigue', 'hot flashes', 'hypertension/fluid retention', 'low potassium', 'liver enzyme changes']
+    },
+    {
+      drugs: ['enzalutamide'],
+      effects: ['fatigue', 'hot flashes', 'hypertension', 'falls/dizziness', 'rare seizure risk']
+    },
+    {
+      drugs: ['cabazitaxel'],
+      effects: ['diarrhea', 'low counts/infection risk', 'fatigue', 'peripheral neuropathy']
     },
     {
       drugs: ['trastuzumab', 'pertuzumab', 'trastuzumab deruxtecan', 'trastuzumab emtansine'],
@@ -663,14 +721,14 @@
   }
 
   function onRegimenChange() {
-    const reg = getSelectedRegimen();
+    const chemoPlan = getActiveChemoPlan();
     const carbSection = document.getElementById('carbSection');
-    if (reg && regimenHasCarboplatin(reg)) {
+    if (chemoPlan && regimenHasCarboplatin(chemoPlan)) {
       carbSection.hidden = false;
     } else {
       carbSection.hidden = true;
     }
-    if (reg) autofillChemoCounselling(reg);
+    if (chemoPlan) autofillChemoCounselling(chemoPlan);
     renderChemoTable();
   }
 
@@ -690,8 +748,8 @@
   function renderChemoTable() {
     const target = document.getElementById('chemoTablePreview');
     if (!target) return;
-    const reg = getSelectedRegimen();
-    if (!reg) { target.innerHTML = ''; return; }
+    const chemoPlan = getActiveChemoPlan();
+    if (!chemoPlan) { target.innerHTML = ''; return; }
 
     const wt = parseFloat(document.getElementById('weight').value) || null;
     const ht = parseFloat(document.getElementById('height').value) || null;
@@ -705,12 +763,12 @@
     // Update GFR/Calvert display
     const carbCalcEl = document.getElementById('carbCalc');
     if (carbCalcEl) {
-      if (regimenHasCarboplatin(reg) && gfr != null) {
+      if (regimenHasCarboplatin(chemoPlan) && gfr != null) {
         carbCalcEl.innerHTML =
           `<strong>Using:</strong> Age ${age} • ${sex === 'female' ? 'Female' : 'Male'} • Wt ${wt} kg • Creat ${creat} mg/dL` +
           `<br><strong>Cockcroft-Gault GFR:</strong> ${gfr.toFixed(1)} mL/min` +
           (gfr > 125 ? ` <em>(capped at 125 for Calvert)</em>` : '');
-      } else if (regimenHasCarboplatin(reg)) {
+      } else if (regimenHasCarboplatin(chemoPlan)) {
         const missing = [];
         if (!age)   missing.push('Age (top of form)');
         if (!sex)   missing.push('Sex (top of form)');
@@ -724,14 +782,14 @@
 
     let html = '<table class="chemo-table"><thead><tr><th>Drug</th><th>Dose</th><th>Calculated</th><th>Schedule</th></tr></thead><tbody>';
 
-    reg.drugs.forEach((d) => {
+    chemoPlan.drugs.forEach((d) => {
       const calc = calculateDrugDose(d, { bsa, wt, gfr });
       const stdDose = formatStandardDose(d);
       html += `<tr>
-        <td>${d.name}</td>
-        <td>${stdDose}</td>
+        <td>${escapeHtml(d.name)}</td>
+        <td>${escapeHtml(stdDose)}</td>
         <td class="dose-cell">${calc}</td>
-        <td class="sched-cell">${d.schedule}</td>
+        <td class="sched-cell">${escapeHtml(d.schedule)}</td>
       </tr>`;
     });
 
@@ -740,6 +798,7 @@
   }
 
   function formatStandardDose(drug) {
+    if (!Number.isFinite(drug.dose)) return '—';
     if (drug.unit === 'AUC')   return `AUC ${drug.dose}`;
     if (drug.unit === 'mg/m²') return `${drug.dose} mg/m²`;
     if (drug.unit === 'mg/kg') return `${drug.dose} mg/kg`;
@@ -750,6 +809,7 @@
 
   function calculateDrugDose(drug, ctx) {
     const { bsa, wt, gfr } = ctx;
+    if (!Number.isFinite(drug.dose)) return '—';
 
     // AUC (Calvert)
     if (drug.unit === 'AUC') {
@@ -820,6 +880,22 @@
       regSearch.addEventListener('change', onRegimenSearchInput);
     }
 
+    const customToggle = document.getElementById('customDrugToggle');
+    if (customToggle) {
+      customToggle.addEventListener('change', () => {
+        updateCustomDrugVisibility();
+        onRegimenChange();
+      });
+    }
+
+    ['customDrugName', 'customDrugDose', 'customDrugUnit', 'customDrugSchedule'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', onRegimenChange);
+        el.addEventListener('change', onRegimenChange);
+      }
+    });
+
     const cycleNotes = document.getElementById('chemoCycleNotes');
     if (cycleNotes) {
       cycleNotes.addEventListener('input', () => {
@@ -863,7 +939,8 @@
     'plan', 'otherNotes', 'prescription',
     'followupDate', 'followupNotes',
     'consultant',
-    'chemoCancer', 'chemoRegimen', 'chemoCreat', 'chemoCycleNotes'
+    'chemoCancer', 'chemoRegimen', 'chemoCreat', 'chemoCycleNotes',
+    'customDrugName', 'customDrugDose', 'customDrugUnit', 'customDrugSchedule'
   ];
 
   const PREVIEW_SYNC_FIELDS = [
@@ -898,6 +975,7 @@
       if (el) state[id] = el.value;
     });
     state.planChemoToggle = document.getElementById('planChemoToggle')?.checked || false;
+    state.customDrugToggle = document.getElementById('customDrugToggle')?.checked || false;
     if (currentPreviewHtml) state.previewHtml = currentPreviewHtml;
     return state;
   }
@@ -920,6 +998,9 @@
       const area = document.getElementById('chemoPlannerArea');
       if (area) area.hidden = !toggle.checked;
     }
+    const customToggle = document.getElementById('customDrugToggle');
+    if (customToggle) customToggle.checked = !!state.customDrugToggle;
+    updateCustomDrugVisibility();
     // Cascading: rebuild regimen dropdown for the loaded cancer type, then reselect regimen
     if (state.chemoCancer) {
       onCancerChange();
@@ -930,7 +1011,7 @@
     }
     // Recalc BSA + chemo table
     calculateBSA();
-    renderChemoTable();
+    onRegimenChange();
   }
 
   function clearFormState() {
@@ -951,6 +1032,7 @@
     if (regSearch) { regSearch.value = ''; regSearch.disabled = true; regSearch.placeholder = 'Select cancer first'; }
     const notesEl = document.getElementById('chemoCycleNotes');
     if (notesEl) notesEl.dataset.autoCounselling = '';
+    updateCustomDrugVisibility();
     setRegimenSearchStatus('', '');
     document.getElementById('bsa').value = '';
   }
@@ -973,7 +1055,8 @@
 
   function isDraftMeaningful(state) {
     if (!state) return false;
-    return MEANINGFUL_FIELDS.some((f) => (state[f] || '').toString().trim().length > 0);
+    return MEANINGFUL_FIELDS.some((f) => (state[f] || '').toString().trim().length > 0) ||
+      !!(state.customDrugToggle && (state.customDrugName || '').toString().trim());
   }
 
   function saveDraft() {
@@ -1337,7 +1420,7 @@
     const notes = val('chemoCycleNotes');
 
     const summary = [];
-    summary.push(`<strong>Regimen:</strong> ${reg.name}`);
+    summary.push(`<strong>Regimen:</strong> ${escapeHtml(reg.name)}`);
     if (bsa) summary.push(`<strong>BSA:</strong> ${bsa.toFixed(2)} m²`);
     if (regimenHasCarboplatin(reg) && gfr != null) {
       summary.push(`<strong>GFR (Cockcroft-Gault):</strong> ${gfr.toFixed(1)} mL/min`);
@@ -1351,10 +1434,10 @@
       const calc = calculateDrugDose(d, { bsa, wt, gfr });
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${d.name}</td>
-        <td>${formatStandardDose(d)}</td>
+        <td>${escapeHtml(d.name)}</td>
+        <td>${escapeHtml(formatStandardDose(d))}</td>
         <td>${calc}</td>
-        <td>${d.schedule}</td>`;
+        <td>${escapeHtml(d.schedule)}</td>`;
       tbody.appendChild(tr);
     });
 
