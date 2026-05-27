@@ -284,7 +284,7 @@
 
   const HORMONAL_THERAPY_DRUGS = [
     'letrozole', 'anastrozole', 'exemestane', 'tamoxifen', 'fulvestrant',
-    'abiraterone', 'enzalutamide'
+    'abiraterone', 'enzalutamide', 'degarelix', 'leuprolide', 'goserelin'
   ];
 
   const TARGETED_THERAPY_DRUGS = [
@@ -394,6 +394,10 @@
     {
       drugs: ['enzalutamide'],
       effects: ['fatigue', 'hot flashes', 'hypertension', 'falls/dizziness', 'rare seizure risk']
+    },
+    {
+      drugs: ['degarelix', 'leuprolide', 'goserelin'],
+      effects: ['hot flashes', 'fatigue', 'injection-site symptoms', 'sexual dysfunction', 'bone loss/metabolic changes']
     },
     {
       drugs: ['cabazitaxel'],

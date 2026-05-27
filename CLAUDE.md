@@ -256,7 +256,7 @@ window.CANCER_TYPES = [
 | lymphoma | 5 |
 | pancreatic | 4 |
 | ovarian | 4 |
-| prostate | 4 |
+| prostate | 10 |
 | biliary | 5 (incl. Durva-GemCis TOPAZ-1, Pembro-GemCis KEYNOTE-966) |
 | hcc | 2 |
 

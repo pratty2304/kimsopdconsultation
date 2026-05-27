@@ -944,11 +944,68 @@ window.REGIMENS = {
       ]
     },
     {
+      key: 'Abiraterone-Degarelix-Prostate',
+      name: 'Abiraterone acetate + Prednisone + Degarelix',
+      aliases: ['abiraterone degarelix', 'zytiga degarelix', 'abiraterone firmagon'],
+      drugs: [
+        { name: 'Abiraterone acetate', dose: 1000, unit: 'flat', isOral: true, schedule: 'PO once daily on empty stomach, continuous' },
+        { name: 'Prednisone',          dose: 5,    unit: 'flat', isOral: true, schedule: 'PO BD, continuous' },
+        { name: 'Degarelix',           dose: 80,   loadingDose: 240, unit: 'flat', schedule: 'SC loading 240 mg once, then 80 mg q28d' }
+      ]
+    },
+    {
+      key: 'Abiraterone-Leuprolide-Prostate',
+      name: 'Abiraterone acetate + Prednisone + Leuprolide',
+      aliases: ['abiraterone leuprolide', 'abiraterone lupron', 'abiraterone eligard'],
+      drugs: [
+        { name: 'Abiraterone acetate', dose: 1000, unit: 'flat', isOral: true, schedule: 'PO once daily on empty stomach, continuous' },
+        { name: 'Prednisone',          dose: 5,    unit: 'flat', isOral: true, schedule: 'PO BD, continuous' },
+        { name: 'Leuprolide',          dose: 22.5, unit: 'flat', schedule: 'Depot injection q12 weeks' }
+      ]
+    },
+    {
+      key: 'Abiraterone-Goserelin-Prostate',
+      name: 'Abiraterone acetate + Prednisone + Goserelin',
+      aliases: ['abiraterone goserelin', 'abiraterone zoladex'],
+      drugs: [
+        { name: 'Abiraterone acetate', dose: 1000, unit: 'flat', isOral: true, schedule: 'PO once daily on empty stomach, continuous' },
+        { name: 'Prednisone',          dose: 5,    unit: 'flat', isOral: true, schedule: 'PO BD, continuous' },
+        { name: 'Goserelin',           dose: 10.8, unit: 'flat', schedule: 'SC implant q12 weeks' }
+      ]
+    },
+    {
       key: 'Enzalutamide-Prostate',
       name: 'Enzalutamide',
       aliases: ['xtandi'],
       drugs: [
         { name: 'Enzalutamide', dose: 160, unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' }
+      ]
+    },
+    {
+      key: 'Enzalutamide-Degarelix-Prostate',
+      name: 'Enzalutamide + Degarelix',
+      aliases: ['enzalutamide degarelix', 'xtandi degarelix', 'enzalutamide firmagon'],
+      drugs: [
+        { name: 'Enzalutamide', dose: 160, unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' },
+        { name: 'Degarelix',    dose: 80,  loadingDose: 240, unit: 'flat', schedule: 'SC loading 240 mg once, then 80 mg q28d' }
+      ]
+    },
+    {
+      key: 'Enzalutamide-Leuprolide-Prostate',
+      name: 'Enzalutamide + Leuprolide',
+      aliases: ['enzalutamide leuprolide', 'xtandi lupron', 'xtandi eligard'],
+      drugs: [
+        { name: 'Enzalutamide', dose: 160,  unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' },
+        { name: 'Leuprolide',   dose: 22.5, unit: 'flat', schedule: 'Depot injection q12 weeks' }
+      ]
+    },
+    {
+      key: 'Enzalutamide-Goserelin-Prostate',
+      name: 'Enzalutamide + Goserelin',
+      aliases: ['enzalutamide goserelin', 'xtandi zoladex'],
+      drugs: [
+        { name: 'Enzalutamide', dose: 160,  unit: 'flat', isOral: true, schedule: 'PO once daily, continuous' },
+        { name: 'Goserelin',    dose: 10.8, unit: 'flat', schedule: 'SC implant q12 weeks' }
       ]
     },
     {
