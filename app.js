@@ -229,23 +229,147 @@
     return reg.drugs.some((d) => d.unit === 'AUC');
   }
 
+  let customDrugRowCounter = 1;
+
+  function getCustomDrugRows() {
+    return Array.from(document.querySelectorAll('#customDrugList [data-custom-drug-row]'));
+  }
+
+  function customDrugField(row, field) {
+    return row ? row.querySelector(`[data-custom-field="${field}"]`) : null;
+  }
+
+  function customDrugRowHasAnyValue(row) {
+    return ['name', 'dose', 'schedule'].some((field) => (customDrugField(row, field)?.value || '').trim()) ||
+      (customDrugField(row, 'unit')?.value || 'mg') !== 'mg';
+  }
+
+  function setCustomDrugRowValues(row, drug) {
+    if (!row) return;
+    const nameEl = customDrugField(row, 'name');
+    const doseEl = customDrugField(row, 'dose');
+    const unitEl = customDrugField(row, 'unit');
+    const scheduleEl = customDrugField(row, 'schedule');
+    if (nameEl) nameEl.value = drug?.name || '';
+    if (doseEl) doseEl.value = drug?.dose ?? '';
+    if (unitEl) unitEl.value = drug?.unit || 'mg';
+    if (scheduleEl) scheduleEl.value = drug?.schedule && drug.schedule !== '—' ? drug.schedule : '';
+  }
+
+  function wireCustomDrugRow(row) {
+    if (!row || row.dataset.customDrugWired === '1') return;
+    row.querySelectorAll('input, select').forEach((el) => {
+      el.addEventListener('input', () => {
+        onRegimenChange();
+        markInteracted();
+      });
+      el.addEventListener('change', () => {
+        onRegimenChange();
+        markInteracted();
+      });
+    });
+    const removeBtn = row.querySelector('.custom-drug-remove');
+    if (removeBtn) {
+      removeBtn.addEventListener('click', () => {
+        const rows = getCustomDrugRows();
+        if (rows.length <= 1) {
+          setCustomDrugRowValues(row, {});
+          return;
+        }
+        row.remove();
+        updateCustomDrugRemoveButtons();
+        onRegimenChange();
+        markInteracted();
+      });
+    }
+    row.dataset.customDrugWired = '1';
+  }
+
+  function createCustomDrugRow(drug, useLegacyIds) {
+    const rowId = useLegacyIds ? '' : `_${++customDrugRowCounter}`;
+    const row = document.createElement('div');
+    row.className = 'custom-drug-row';
+    row.dataset.customDrugRow = '1';
+    row.innerHTML = `
+      <div class="grid grid-4">
+        <label>Drug name
+          <input type="text" ${useLegacyIds ? 'id="customDrugName"' : `id="customDrugName${rowId}"`} data-custom-field="name" placeholder="Drug name" autocomplete="off" />
+        </label>
+        <label>Dose
+          <input type="number" step="0.01" ${useLegacyIds ? 'id="customDrugDose"' : `id="customDrugDose${rowId}"`} data-custom-field="dose" placeholder="Dose" />
+        </label>
+        <label>Unit
+          <select ${useLegacyIds ? 'id="customDrugUnit"' : `id="customDrugUnit${rowId}"`} data-custom-field="unit">
+            <option value="mg">mg</option>
+            <option value="mg/m²">mg/m²</option>
+            <option value="mg/kg">mg/kg</option>
+            <option value="AUC">AUC</option>
+            <option value="flat">flat mg</option>
+          </select>
+        </label>
+        <label>Schedule
+          <input type="text" ${useLegacyIds ? 'id="customDrugSchedule"' : `id="customDrugSchedule${rowId}"`} data-custom-field="schedule" placeholder="D1, q21d" autocomplete="off" />
+        </label>
+      </div>
+      <button type="button" class="btn-ghost btn-small custom-drug-remove">Remove</button>`;
+    setCustomDrugRowValues(row, drug || {});
+    wireCustomDrugRow(row);
+    return row;
+  }
+
+  function updateCustomDrugRemoveButtons() {
+    const rows = getCustomDrugRows();
+    rows.forEach((row) => {
+      const removeBtn = row.querySelector('.custom-drug-remove');
+      if (removeBtn) removeBtn.hidden = rows.length <= 1;
+    });
+  }
+
+  function ensureCustomDrugRows() {
+    const list = document.getElementById('customDrugList');
+    if (!list) return;
+    if (!getCustomDrugRows().length) {
+      list.appendChild(createCustomDrugRow({}, true));
+    }
+    getCustomDrugRows().forEach(wireCustomDrugRow);
+    updateCustomDrugRemoveButtons();
+  }
+
+  function setCustomDrugRows(drugs) {
+    const list = document.getElementById('customDrugList');
+    if (!list) return;
+    const rows = Array.isArray(drugs) && drugs.length ? drugs : [{}];
+    list.innerHTML = '';
+    rows.forEach((drug, index) => {
+      list.appendChild(createCustomDrugRow(drug, index === 0));
+    });
+    updateCustomDrugRemoveButtons();
+  }
+
+  function addCustomDrugRow(drug) {
+    const list = document.getElementById('customDrugList');
+    if (!list) return null;
+    const row = createCustomDrugRow(drug || {}, getCustomDrugRows().length === 0);
+    list.appendChild(row);
+    updateCustomDrugRemoveButtons();
+    return row;
+  }
+
   function updateCustomDrugVisibility() {
     const toggle = document.getElementById('customDrugToggle');
     const fields = document.getElementById('customDrugFields');
     if (fields) fields.hidden = !(toggle && toggle.checked);
+    if (toggle && toggle.checked) ensureCustomDrugRows();
   }
 
-  function getCustomDrug() {
-    const toggle = document.getElementById('customDrugToggle');
-    if (!toggle || !toggle.checked) return null;
-
-    const name = (document.getElementById('customDrugName')?.value || '').trim();
+  function readCustomDrugRow(row) {
+    const name = (customDrugField(row, 'name')?.value || '').trim();
     if (!name) return null;
 
-    const rawDose = document.getElementById('customDrugDose')?.value;
+    const rawDose = customDrugField(row, 'dose')?.value;
     const parsedDose = rawDose === '' || rawDose == null ? null : parseFloat(rawDose);
-    const unit = document.getElementById('customDrugUnit')?.value || 'mg';
-    const schedule = (document.getElementById('customDrugSchedule')?.value || '').trim();
+    const unit = customDrugField(row, 'unit')?.value || 'mg';
+    const schedule = (customDrugField(row, 'schedule')?.value || '').trim();
 
     return {
       name,
@@ -256,19 +380,59 @@
     };
   }
 
+  function getCustomDrugs() {
+    const toggle = document.getElementById('customDrugToggle');
+    if (!toggle || !toggle.checked) return [];
+    return getCustomDrugRows().map(readCustomDrugRow).filter(Boolean);
+  }
+
+  function getCustomDrugFormValues() {
+    return getCustomDrugRows()
+      .filter(customDrugRowHasAnyValue)
+      .map((row) => ({
+        name: (customDrugField(row, 'name')?.value || '').trim(),
+        dose: customDrugField(row, 'dose')?.value || '',
+        unit: customDrugField(row, 'unit')?.value || 'mg',
+        schedule: (customDrugField(row, 'schedule')?.value || '').trim()
+      }));
+  }
+
+  function getSavedCustomDrugRows(state) {
+    if (Array.isArray(state?.customDrugs) && state.customDrugs.length) {
+      return state.customDrugs;
+    }
+    const legacyDrug = {
+      name: state?.customDrugName || '',
+      dose: state?.customDrugDose || '',
+      unit: state?.customDrugUnit || 'mg',
+      schedule: state?.customDrugSchedule || ''
+    };
+    return (legacyDrug.name || legacyDrug.dose || legacyDrug.schedule) ? [legacyDrug] : [{}];
+  }
+
+  function stateHasCustomDrugName(state) {
+    if (!state?.customDrugToggle) return false;
+    if (Array.isArray(state.customDrugs)) {
+      return state.customDrugs.some((drug) => (drug?.name || '').toString().trim());
+    }
+    return !!(state.customDrugName || '').toString().trim();
+  }
+
   function getActiveChemoPlan() {
     const reg = getSelectedRegimen();
-    const customDrug = getCustomDrug();
-    if (!reg && !customDrug) return null;
+    const customDrugs = getCustomDrugs();
+    if (!reg && customDrugs.length === 0) return null;
 
     const drugs = reg ? reg.drugs.slice() : [];
-    if (customDrug) drugs.push(customDrug);
+    drugs.push(...customDrugs);
 
-    let name = reg ? reg.name : `Custom drug: ${customDrug.name}`;
-    if (reg && customDrug) name = `${reg.name} + Custom drug`;
+    let name = reg ? reg.name : `Custom drug: ${customDrugs[0].name}`;
+    if (!reg && customDrugs.length > 1) name = `Custom drugs: ${customDrugs.map((d) => d.name).join(' + ')}`;
+    if (reg && customDrugs.length === 1) name = `${reg.name} + Custom drug`;
+    if (reg && customDrugs.length > 1) name = `${reg.name} + ${customDrugs.length} custom drugs`;
 
     return {
-      key: reg ? reg.key : 'Custom-Drug',
+      key: reg ? reg.key : 'Custom-Drugs',
       name,
       drugs
     };
@@ -892,13 +1056,18 @@
       });
     }
 
-    ['customDrugName', 'customDrugDose', 'customDrugUnit', 'customDrugSchedule'].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener('input', onRegimenChange);
-        el.addEventListener('change', onRegimenChange);
-      }
-    });
+    ensureCustomDrugRows();
+
+    const addCustomBtn = document.getElementById('addCustomDrugBtn');
+    if (addCustomBtn) {
+      addCustomBtn.addEventListener('click', () => {
+        const row = addCustomDrugRow();
+        updateCustomDrugVisibility();
+        onRegimenChange();
+        markInteracted();
+        customDrugField(row, 'name')?.focus();
+      });
+    }
 
     const cycleNotes = document.getElementById('chemoCycleNotes');
     if (cycleNotes) {
@@ -980,6 +1149,7 @@
     });
     state.planChemoToggle = document.getElementById('planChemoToggle')?.checked || false;
     state.customDrugToggle = document.getElementById('customDrugToggle')?.checked || false;
+    state.customDrugs = getCustomDrugFormValues();
     if (currentPreviewHtml) state.previewHtml = currentPreviewHtml;
     return state;
   }
@@ -1004,6 +1174,7 @@
     }
     const customToggle = document.getElementById('customDrugToggle');
     if (customToggle) customToggle.checked = !!state.customDrugToggle;
+    setCustomDrugRows(getSavedCustomDrugRows(state));
     updateCustomDrugVisibility();
     // Cascading: rebuild regimen dropdown for the loaded cancer type, then reselect regimen
     if (state.chemoCancer) {
@@ -1036,6 +1207,7 @@
     if (regSearch) { regSearch.value = ''; regSearch.disabled = true; regSearch.placeholder = 'Select cancer first'; }
     const notesEl = document.getElementById('chemoCycleNotes');
     if (notesEl) notesEl.dataset.autoCounselling = '';
+    setCustomDrugRows([]);
     updateCustomDrugVisibility();
     setRegimenSearchStatus('', '');
     document.getElementById('bsa').value = '';
@@ -1060,7 +1232,7 @@
   function isDraftMeaningful(state) {
     if (!state) return false;
     return MEANINGFUL_FIELDS.some((f) => (state[f] || '').toString().trim().length > 0) ||
-      !!(state.customDrugToggle && (state.customDrugName || '').toString().trim());
+      stateHasCustomDrugName(state);
   }
 
   function saveDraft() {

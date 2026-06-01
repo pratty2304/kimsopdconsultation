@@ -58,7 +58,7 @@ No external dependencies. `regimens.js` is loaded before `app.js` in `index.html
 | 6 | Examination | Height (cm) → Weight (kg) → BSA (auto-Mosteller, read-only) → ECOG; plus General and Systemic/Local exam |
 | 7 | Diagnosis | Free text — primary site, histology, stage, biomarkers |
 | 8 | Treatment Plan / Advice | Free text |
-| 9 | **Plan Chemotherapy** *(optional, behind a checkbox toggle)* | Cancer type → Regimen, plus optional custom drug; carboplatin auto-shows creatinine field. No cycle number — this is an overall regimen plan handed to the patient |
+| 9 | **Plan Chemotherapy** *(optional, behind a checkbox toggle)* | Cancer type → Regimen, plus optional custom drugs; carboplatin auto-shows creatinine field. No cycle number — this is an overall regimen plan handed to the patient |
 | 10 | Other Notes | Free text |
 | 11 | Rx — Prescription | Free text — italic Rx heading in print |
 | 12 | Follow-up | Date + instructions |
@@ -144,8 +144,8 @@ Behind a checkbox toggle (`#planChemoToggle`) — off by default. When on, revea
 ### Workflow
 1. User toggles "Plan chemotherapy for this visit" on
 2. Selects **Cancer Type** (16 types) → **Regimen** dropdown filters to that cancer's regimens
-3. Optionally checks **Add custom drug** to add one manual drug row, with or without a selected regimen
-4. If regimen/custom drug contains a Carboplatin (`unit: 'AUC'`) drug, the **Carboplatin AUC** block appears asking only for **serum creatinine** (age + sex + weight are pulled from the top of the form)
+3. Optionally checks **Add custom drug** to add one or more manual drug rows, with or without a selected regimen
+4. If regimen/custom drugs contain a Carboplatin (`unit: 'AUC'`) drug, the **Carboplatin AUC** block appears asking only for **serum creatinine** (age + sex + weight are pulled from the top of the form)
 5. Live table renders: Drug | Standard dose | Calculated dose | Schedule
 6. Optional cycle notes textarea
 7. On print, table is rendered into `#printChemoTable` inside the bordered content area

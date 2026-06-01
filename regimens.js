@@ -133,6 +133,15 @@ window.REGIMENS = {
       ]
     },
     {
+      key: 'Gemcitabine-Carboplatin-Breast',
+      name: 'Gemcitabine + Carboplatin',
+      aliases: ['gem carbo breast', 'gemcitabine carboplatin breast', 'carbo gem breast'],
+      drugs: [
+        { name: 'Gemcitabine', dose: 1000, unit: 'mg/m²', schedule: 'D1, D8, q21d' },
+        { name: 'Carboplatin', dose: 5,    unit: 'AUC',   schedule: 'D1, q21d (AUC 5)' }
+      ]
+    },
+    {
       key: 'Capecitabine-Breast',
       name: 'Capecitabine (single agent)',
       drugs: [
