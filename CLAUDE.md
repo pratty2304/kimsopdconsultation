@@ -30,7 +30,7 @@ Includes an **optional integrated Chemotherapy Planner** that calculates BSA-, w
 ├── styles.css      # Pastel screen theme + print stylesheet
 ├── app.js          # Event handlers, BSA/GFR/Calvert math, print rendering
 ├── regimens.js     # Curated chemotherapy regimen database (window.REGIMENS)
-├── logo.png        # KIMS MACS Onco Sciences logo (copied from Desktop/KIMS docs/IMG_5659.PNG)
+├── KIMS_Renova_logo.png # KIMS Renova Oncology Institute logo (cropped from Desktop/KIMS docs/IMG_7410.jpeg)
 └── CLAUDE.md       # This file
 ```
 
@@ -87,7 +87,7 @@ Designed to print on **the existing pre-printed KIMS Hospitals letterhead** (KIM
 ┌──────────────────────────────────────────────────────────┐
 │ [pre-printed KIMS Hospitals letterhead — top of page]    │  ← @page top margin
 │                                                          │     reserves this space
-├──[KIMS MACS LOGO 70mm × 30mm — top-left]─────────────────┤
+├──[KIMS RENOVA LOGO 70mm × 30mm — top-left]───────────────┤
 │ ═══════════════════════════════════════════════════════ │  ← top horizontal rule
 │ TEAM MEDICAL    │  Name: ___        Age/Sex: ___        │
 │ ONCOLOGY        │  Date: ___        MRN: ___            │
@@ -115,7 +115,7 @@ Designed to print on **the existing pre-printed KIMS Hospitals letterhead** (KIM
 
 ### Page geometry
 - `@page size: A4`
-- `@page margin: 5mm 8mm 14mm 8mm` — top margin reduced to 5mm so the MACS logo sits flush at top-left of the page (level with the pre-printed KIMS Hospitals logo on the letterhead).
+- `@page margin: 5mm 8mm 14mm 8mm` — top margin reduced to 5mm so the Renova logo sits flush at top-left of the page (level with the pre-printed KIMS Hospitals logo on the letterhead).
 - Logo is confined to a **70mm × 30mm** rectangle (`.print-logo-wrap`), matching the KIMS Hospitals letterhead logo dimensions. `object-fit: contain` preserves aspect ratio.
 - Top + bottom horizontal rules frame the bordered grid. Vertical rule separates the team sidebar from the main content.
 
