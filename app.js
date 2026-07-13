@@ -1131,6 +1131,53 @@
     if (notice) notice.hidden = !currentPreviewHtml;
   }
 
+  function stripEditableMarkers(root) {
+    root.querySelectorAll('[contenteditable]').forEach((el) => {
+      el.removeAttribute('contenteditable');
+      el.classList.remove('editable');
+    });
+  }
+
+  function preserveFormattedContent(savedRoot, freshRoot, selector) {
+    const savedNodes = Array.from(savedRoot.querySelectorAll(selector));
+    const freshNodes = Array.from(freshRoot.querySelectorAll(selector));
+    freshNodes.forEach((freshNode, index) => {
+      const savedNode = savedNodes[index];
+      if (!savedNode) return;
+      if (editableText(savedNode) === editableText(freshNode)) {
+        freshNode.innerHTML = savedNode.innerHTML;
+      }
+    });
+  }
+
+  function refreshCurrentPreviewFromForm() {
+    if (!currentPreviewHtml) return;
+    const printArea = document.getElementById('printArea');
+    if (!printArea) return;
+
+    const savedRoot = document.createElement('div');
+    savedRoot.innerHTML = currentPreviewHtml;
+
+    buildPrintSummary();
+    const freshRoot = printArea.cloneNode(true);
+
+    [
+      '.print-section p',
+      '[data-field]',
+      '#printChemoSummary',
+      '#printChemoTable td',
+      '#printChemoNotes',
+      '.print-meta div',
+      '.team-doctor div',
+      '.print-signature div'
+    ].forEach((selector) => preserveFormattedContent(savedRoot, freshRoot, selector));
+
+    stripEditableMarkers(freshRoot);
+    currentPreviewHtml = freshRoot.innerHTML;
+    printArea.innerHTML = currentPreviewHtml;
+    updatePreviewEditsNotice();
+  }
+
   function buildCurrentPrintableSummary() {
     const printArea = document.getElementById('printArea');
     if (currentPreviewHtml && printArea) {
@@ -1270,9 +1317,8 @@
   // after the user clicked Discard).
   let userHasInteracted = false;
   function markInteracted() {
-    currentPreviewHtml = '';
-    updatePreviewEditsNotice();
     userHasInteracted = true;
+    refreshCurrentPreviewFromForm();
     scheduleAutosave();
   }
   document.querySelectorAll('#opdForm input, #opdForm select, #opdForm textarea').forEach((el) => {
@@ -1634,10 +1680,7 @@
     const printArea = document.getElementById('printArea');
     if (!printArea) return '';
     const clone = printArea.cloneNode(true);
-    clone.querySelectorAll('[contenteditable]').forEach((el) => {
-      el.removeAttribute('contenteditable');
-      el.classList.remove('editable');
-    });
+    stripEditableMarkers(clone);
     return clone.innerHTML;
   }
 
@@ -1650,13 +1693,14 @@
     });
   }
 
-  function capturePreviewEdits() {
+  function capturePreviewEdits(options = {}) {
     if (!document.body.classList.contains('preview-mode')) return;
     syncPreviewTextToForm();
     currentPreviewHtml = cleanPreviewHtml();
     updatePreviewEditsNotice();
     userHasInteracted = true;
-    scheduleAutosave();
+    if (options.saveNow) saveDraft();
+    else scheduleAutosave();
   }
 
   function makePrintAreaEditable() {
@@ -1676,6 +1720,9 @@
         el.setAttribute('contenteditable', 'true');
         el.classList.add('editable');
         el.addEventListener('input', capturePreviewEdits);
+        el.addEventListener('keyup', capturePreviewEdits);
+        el.addEventListener('mouseup', capturePreviewEdits);
+        el.addEventListener('blur', capturePreviewEdits);
       });
     });
   }
@@ -1705,12 +1752,9 @@
     document.body.classList.remove('preview-mode');
     document.getElementById('previewToolbar').hidden = true;
 
-    // Strip contenteditable so re-entering preview rebuilds cleanly from form data
+    // Strip editing markers so saved preview HTML can be reused for future prints.
     const printArea = document.getElementById('printArea');
-    printArea.querySelectorAll('[contenteditable="true"]').forEach((el) => {
-      el.removeAttribute('contenteditable');
-      el.classList.remove('editable');
-    });
+    stripEditableMarkers(printArea);
     updatePreviewEditsNotice();
     showToast('Preview edits saved. Main Print/PDF will use them.');
     restoreTitle();
@@ -1752,6 +1796,7 @@
   }
 
   function printDocument(mode) {
+    capturePreviewEdits({ saveNow: true });
     document.body.classList.toggle('print-bw', mode === 'bw');
     setPdfTitle();
     window.print();
@@ -1794,5 +1839,19 @@
       printDocument('color');
     });
   }
+
+  window.addEventListener('beforeprint', () => {
+    capturePreviewEdits({ saveNow: true });
+  });
+
+  window.addEventListener('pagehide', () => {
+    capturePreviewEdits({ saveNow: true });
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      capturePreviewEdits({ saveNow: true });
+    }
+  });
 
 })();
