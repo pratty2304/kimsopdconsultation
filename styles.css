@@ -1158,7 +1158,8 @@ body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
 
   .print-section {
     margin-bottom: 10pt;
-    page-break-inside: avoid;
+    break-inside: auto;
+    page-break-inside: auto;
   }
 
   .print-section h3 {
@@ -1169,6 +1170,8 @@ body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
     color: #2c93c9;
     border-bottom: 0.6pt solid #b8d8e8;
     padding-bottom: 1pt;
+    break-after: avoid;
+    page-break-after: avoid;
   }
 
   .print-section p {
@@ -1176,6 +1179,19 @@ body.preview-mode .sig-sub { font-size: 9pt; color: #444; }
     white-space: pre-wrap;
     line-height: 1.4;
     font-size: 10.5pt;
+    break-inside: auto;
+    page-break-inside: auto;
+    orphans: 3;
+    widows: 3;
+  }
+
+  .print-section[data-section="complaints"],
+  .print-section[data-section="personalFamily"],
+  .print-section[data-section="exam"],
+  .print-section[data-section="diagnosis"],
+  .print-section[data-section="followup"] {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   .print-section[data-section="prescription"] h3 {
